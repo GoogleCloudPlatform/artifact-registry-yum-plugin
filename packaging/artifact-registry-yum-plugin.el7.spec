@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Don't build debuginfo packages.
-%define debug_package %{nil}
-
 Name: yum-plugin-artifact-registry
 Epoch:   1
 Version: %{_version}
@@ -33,19 +30,14 @@ Contains a Yum plugin for authenticated access to Google Artifact Registry repos
 %prep
 %autosetup
 
-%build
-echo true
-
 %install
-install -d %{buildroot}usr/lib/yum-plugins
-install -p -m 0644 yum/artifact-registry.py %{buildroot}usr/lib/yum-plugins/
-install -d %{buildroot}etc/yum/pluginconf.d
-install -p -m 0644 yum/artifact-registry.conf %{buildroot}etc/yum/pluginconf.d/
-install -d %{buildroot}usr/share/doc/%{name}
-install -p -m 0644 LICENSE %{buildroot}usr/share/doc/%{name}/
+install -d %{buildroot}/usr/lib/yum-plugins
+install -p -m 0644 yum/artifact-registry.py %{buildroot}/usr/lib/yum-plugins/
+install -d %{buildroot}/etc/yum/pluginconf.d
+install -p -m 0644 yum/artifact-registry.conf %{buildroot}/etc/yum/pluginconf.d/
 
 %files
 %defattr(-,root,root,-)
-/usr/lib/yum-plugins/artifact-registry.py
+/usr/lib/yum-plugins/artifact-registry.py*
 %config /etc/yum/pluginconf.d/artifact-registry.conf
 %doc LICENSE
