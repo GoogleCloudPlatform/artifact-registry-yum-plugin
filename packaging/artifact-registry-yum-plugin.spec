@@ -32,6 +32,7 @@ Contains a dnf plugin for authenticated access to Google Artifact Registry repos
 %autosetup
 
 %install
+%define __python /usr/bin/python3
 install -d %{buildroot}%{python_sitelib}/dnf-plugins
 install -p -m 0644 dnf/artifact-registry.py %{buildroot}%{python_sitelib}/dnf-plugins/
 install -d %{buildroot}/etc/dnf/plugins
@@ -39,6 +40,7 @@ install -p -m 0644 dnf/artifact-registry.conf %{buildroot}/etc/dnf/plugins/
 
 %files
 %defattr(-,root,root,-)
-%{python_sitelib}/dnf-plugins/artifact-registry.py*
+%{python_sitelib}/dnf-plugins/artifact-registry.py
+%{python_sitelib}/dnf-plugins/__pycache__/artifact-registry*.py*
 %config /etc/dnf/plugins/artifact-registry.conf
 %doc LICENSE
