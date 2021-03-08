@@ -22,7 +22,7 @@ from google.oauth2 import service_account
 
 
 class ArtifactRegistry(dnf.Plugin):
-  '''DNF Plugin for authenticated access to Google Artifact Registry.'''
+  """DNF Plugin for authenticated access to Google Artifact Registry."""
 
   name = 'artifact-registry'
 
