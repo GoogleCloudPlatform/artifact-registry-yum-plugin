@@ -32,14 +32,14 @@ class ArtifactRegistry(dnf.Plugin):
     self.credentials = self._get_creds()
 
   def _get_creds(self):
-    cp = self.read_config(self.base.conf)
-    if cp.has_section('main'):
-      if cp.has_option('main', 'service_account_json'):
-        service_account_json = cp.get('main', 'service_account_json')
+    config = self.read_config(self.base.conf)
+    if config.has_section('main'):
+      if config.has_option('main', 'service_account_json'):
+        service_account_json = config.get('main', 'service_account_json')
         return service_account.Credentials.from_service_account_file(
             service_account_json)
-      if cp.has_option('main', 'service_account_email'):
-        service_account_email = cp.get('main', 'service_account_email')
+      if config.has_option('main', 'service_account_email'):
+        service_account_email = config.get('main', 'service_account_email')
         return compute_engine.Credentials(service_account_email)
     try:
       creds, _ = google.auth.default()
