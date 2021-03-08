@@ -12,33 +12,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Name: yum-plugin-artifact-registry
+Name: dnf-plugin-artifact-registry
 Epoch:   1
 Version: %{_version}
 Release: g1%{?dist}
-Summary: Yum plugin for Google Artifact Registry
+Summary: dnf plugin for Google Artifact Registry
 License: ASL 2.0
 Url: https://cloud.google.com/artifact-registry
 Source0: %{name}_%{version}.orig.tar.gz
 
-Requires: yum >= 3.0
-Requires: python2-google-auth >= 1.1.1
+Requires: dnf >= 1.0.0
+Requires: python3-google-auth >= 1.1.1
 BuildArch: %{_arch}
 
 %description
-Contains a Yum plugin for authenticated access to Google Artifact Registry repositories.
+Contains a dnf plugin for authenticated access to Google Artifact Registry repositories.
 
 %prep
 %autosetup
 
 %install
-install -d %{buildroot}/usr/lib/yum-plugins
-install -p -m 0644 yum/artifact-registry.py %{buildroot}/usr/lib/yum-plugins/
-install -d %{buildroot}/etc/yum/pluginconf.d
-install -p -m 0644 yum/artifact-registry.conf %{buildroot}/etc/yum/pluginconf.d/
+install -d %{buildroot}%{python_sitelib}/dnf-plugins
+install -p -m 0644 dnf/artifact-registry.py %{buildroot}%{python_sitelib}/dnf-plugins/
+install -d %{buildroot}/etc/dnf/plugins
+install -p -m 0644 dnf/artifact-registry.conf %{buildroot}/etc/dnf/plugins/
 
 %files
 %defattr(-,root,root,-)
-/usr/lib/yum-plugins/artifact-registry.py*
-%config /etc/yum/pluginconf.d/artifact-registry.conf
+%{python_sitelib}/dnf-plugins/artifact-registry.py*
+%config /etc/dnf/plugins/artifact-registry.conf
 %doc LICENSE
