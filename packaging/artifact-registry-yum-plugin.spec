@@ -16,7 +16,7 @@ Name: dnf-plugin-artifact-registry
 Epoch:   1
 Version: %{_version}
 Release: g1%{?dist}
-Summary: dnf plugin for Google Artifact Registry
+Summary: dnf plugin for Artifact Registry
 License: ASL 2.0
 Url: https://cloud.google.com/artifact-registry
 Source0: %{name}_%{version}.orig.tar.gz
@@ -26,7 +26,7 @@ Requires: python3-google-auth >= 1.1.1
 BuildArch: %{_arch}
 
 %description
-Contains a dnf plugin for authenticated access to Google Artifact Registry repositories.
+Contains a dnf plugin for authenticated access to Artifact Registry repositories.
 
 %prep
 %autosetup

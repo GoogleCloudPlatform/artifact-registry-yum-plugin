@@ -16,7 +16,7 @@ Name: yum-plugin-artifact-registry
 Epoch:   1
 Version: %{_version}
 Release: g1%{?dist}
-Summary: Yum plugin for Google Artifact Registry
+Summary: Yum plugin for Artifact Registry
 License: ASL 2.0
 Url: https://cloud.google.com/artifact-registry
 Source0: %{name}_%{version}.orig.tar.gz
@@ -27,7 +27,7 @@ Requires: python2-requests >= 2.0
 BuildArch: %{_arch}
 
 %description
-Contains a Yum plugin for authenticated access to Google Artifact Registry repositories.
+Contains a Yum plugin for authenticated access to Artifact Registry repositories.
 
 %prep
 %autosetup
