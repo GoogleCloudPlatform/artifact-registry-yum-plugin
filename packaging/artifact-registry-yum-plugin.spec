@@ -36,7 +36,7 @@ Contains a dnf plugin for authenticated access to Artifact Registry repositories
 install -d %{buildroot}%{python_sitelib}/dnf-plugins
 install -p -m 0644 dnf/artifact-registry.py %{buildroot}%{python_sitelib}/dnf-plugins/
 install -d %{buildroot}/etc/dnf/plugins
-install -p -m 0644 dnf/artifact-registry.conf %{buildroot}/etc/dnf/plugins/
+install -p -m 0644 artifact-registry.conf %{buildroot}/etc/dnf/plugins/
 
 %files
 %defattr(-,root,root,-)

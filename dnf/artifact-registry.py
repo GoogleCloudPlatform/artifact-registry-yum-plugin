@@ -31,6 +31,12 @@ class ArtifactRegistry(dnf.Plugin):
     self.base = base
     self.credentials = self._get_creds()
 
+  def config(self):
+    for repo in self.base.repos.iter_enabled():
+      opts = dict(repo.cfg.items(repo.id))
+      if 'pkg.dev' in opts.get('baseurl', ''):
+        self._add_headers(repo)
+
   def _get_creds(self):
     config = self.read_config(self.base.conf)
     if config.has_section('main'):
@@ -46,12 +52,6 @@ class ArtifactRegistry(dnf.Plugin):
       return creds
     except DefaultCredentialsError:
       return None
-
-  def config(self):
-    for repo in self.base.repos.iter_enabled():
-      opts = dict(repo.cfg.items(repo.id))
-      if 'pkg.dev' in opts.get('baseurl', ''):
-        self._add_headers(repo)
 
   def _add_headers(self, repo):
     token = self._get_token()
