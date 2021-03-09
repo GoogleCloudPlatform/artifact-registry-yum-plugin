@@ -36,7 +36,7 @@ Contains a Yum plugin for authenticated access to Artifact Registry repositories
 install -d %{buildroot}/usr/lib/yum-plugins
 install -p -m 0644 yum/artifact-registry.py %{buildroot}/usr/lib/yum-plugins/
 install -d %{buildroot}/etc/yum/pluginconf.d
-install -p -m 0644 yum/artifact-registry.conf %{buildroot}/etc/yum/pluginconf.d/
+install -p -m 0644 artifact-registry.conf %{buildroot}/etc/yum/pluginconf.d/
 
 %files
 %defattr(-,root,root,-)

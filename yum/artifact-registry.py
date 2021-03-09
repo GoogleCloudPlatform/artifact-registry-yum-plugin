@@ -40,8 +40,8 @@ def _get_creds(conduit):
   if service_account_json:
     return service_account.Credentials.from_service_account_file(
         service_account_json)
-  service_account_email = conduit.confString('main', 'service_account_email',
-                                             '')
+  service_account_email = conduit.confString(
+      'main', 'service_account_email', '')
   if service_account_email:
     return compute_engine.Credentials(service_account_email)
 
