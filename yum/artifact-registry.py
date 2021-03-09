@@ -14,7 +14,9 @@
 
 import google.auth
 import google.auth.transport.requests
+from google.auth import compute_engine
 from google.auth.exceptions import DefaultCredentialsError, RefreshError
+from google.oauth2 import service_account
 
 from yum.plugins import TYPE_CORE
 
@@ -23,25 +25,46 @@ plugin_type = (TYPE_CORE,)
 
 
 def prereposetup_hook(conduit):
-  conduit.info(2, 'Enabling Artifact Registry authentication')
+  credentials = _get_creds()
+  if not credentials:
+    return
   for repo in conduit.getRepos().listEnabled():
     for url in repo.urls:
       if 'pkg.dev' in url:
-        _add_headers(repo)
+        _add_headers(credentials, repo)
         break  # Stop looking at URLs
 
 
-def _add_headers(repo):
+def _get_creds(conduit):
+  service_account_json = conduit.confString('main', 'service_account_json', '')
+  if service_account_json:
+    return service_account.Credentials.from_service_account_file(
+        service_account_json)
+  service_account_email = conduit.confString('main', 'service_account_email',
+                                             '')
+  if service_account_email:
+    return compute_engine.Credentials(service_account_email)
+
   try:
-    credentials, _ = google.auth.default()
+    creds, _ = google.auth.default()
+    return creds
   except DefaultCredentialsError:
     return None
 
-  try:
-    credentials.refresh(google.auth.transport.requests.Request())
-  except RefreshError:
-    return None
 
-  if credentials.valid:
+def _add_headers(credentials, repo):
+  token = _get_token(credentials)
+  if token:
     repo.http_headers.update(
         {'Authorization': 'Bearer %s' % credentials.token})
+
+
+def _get_token(credentials):
+  if not credentials:
+    return None
+  if not credentials.valid:
+    try:
+      credentials.refresh(google.auth.transport.requests.Request())
+    except RefreshError:
+      return None
+  return credentials.token
