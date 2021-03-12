@@ -23,7 +23,7 @@ Source0: %{name}_%{version}.orig.tar.gz
 
 Requires: dnf >= 1.0.0
 Requires: python3-google-auth >= 1.1.1
-BuildArch: %{_arch}
+BuildArch: noarch
 
 %description
 Contains a dnf plugin for authenticated access to Artifact Registry repositories.
