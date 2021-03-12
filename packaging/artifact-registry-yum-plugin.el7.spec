@@ -24,7 +24,7 @@ Source0: %{name}_%{version}.orig.tar.gz
 Requires: yum >= 3.0
 Requires: python2-google-auth >= 1.1.1
 Requires: python2-requests >= 2.0
-BuildArch: %{_arch}
+BuildArch: noarch
 
 %description
 Contains a Yum plugin for authenticated access to Artifact Registry repositories.
