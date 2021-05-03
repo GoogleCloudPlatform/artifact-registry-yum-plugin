@@ -1,0 +1,21 @@
+cachetools<5.0,>=2.0.0
+pyasn1-modules>=0.2.1
+setuptools>=40.3.0
+six>=1.9.0
+
+[:python_version < "3.6"]
+rsa<4.6
+
+[:python_version >= "3.6"]
+rsa<5,>=3.1.4
+
+[aiohttp]
+
+[aiohttp:python_version >= "3.6"]
+aiohttp<4.0.0dev,>=3.6.2
+
+[pyopenssl]
+pyopenssl>=20.0.0
+
+[reauth]
+pyu2f>=0.1.5
