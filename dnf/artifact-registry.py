@@ -14,11 +14,10 @@
 
 import dnf
 
-import google.auth
-import google.auth.transport.requests
-from google.auth import compute_engine
-from google.auth.exceptions import DefaultCredentialsError, RefreshError
-from google.oauth2 import service_account
+from artifact_registry._vendor.google.auth import compute_engine, default
+from artifact_registry._vendor.google.auth.exceptions import DefaultCredentialsError, RefreshError
+from artifact_registry._vendor.google.auth.transport import requests
+from artifact_registry._vendor.google.oauth2 import service_account
 
 
 class ArtifactRegistry(dnf.Plugin):
@@ -47,11 +46,13 @@ class ArtifactRegistry(dnf.Plugin):
       if config.has_option('main', 'service_account_email'):
         service_account_email = config.get('main', 'service_account_email')
         return compute_engine.Credentials(service_account_email)
+
     try:
-      creds, _ = google.auth.default()
-      return creds
+      creds, _ = default()
     except DefaultCredentialsError:
       return None
+
+    return creds
 
   def _add_headers(self, repo):
     token = self._get_token()
@@ -65,7 +66,7 @@ class ArtifactRegistry(dnf.Plugin):
       return None
     if not self.credentials.valid:
       try:
-        self.credentials.refresh(google.auth.transport.requests.Request())
+        self.credentials.refresh(requests.Request())
       except RefreshError:
         return None
     return self.credentials.token
