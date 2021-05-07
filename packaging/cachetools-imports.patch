@@ -1,0 +1,11 @@
+diff -urN _vendor/cachetools-orig/mru.py _vendor/cachetools/mru.py
+--- _vendor/cachetools-orig/mru.py	2021-04-27 21:11:59.000000000 +0000
++++ _vendor/cachetools/mru.py	2021-05-07 20:22:44.988549177 +0000
+@@ -1,6 +1,6 @@
+ import collections
+ 
+-from cachetools.cache import Cache
++from artifact_registry._vendor.cachetools.cache import Cache
+ 
+ 
+ class MRUCache(Cache):
