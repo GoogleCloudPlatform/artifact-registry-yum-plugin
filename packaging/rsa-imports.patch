@@ -1,0 +1,390 @@
+diff -urN _vendor/rsa-orig/cli.py _vendor/rsa/cli.py
+--- _vendor/rsa-orig/cli.py	2021-01-10 10:09:07.000000000 +0000
++++ _vendor/rsa/cli.py	2021-05-07 20:43:39.569984028 +0000
+@@ -22,11 +22,11 @@
+ import typing
+ import optparse
+ 
+-import rsa
+-import rsa.key
+-import rsa.pkcs1
++from artifact_registry._vendor import rsa
++import artifact_registry._vendor.rsa.key
++import artifact_registry._vendor.rsa.pkcs1
+ 
+-HASH_METHODS = sorted(rsa.pkcs1.HASH_METHODS.keys())
++HASH_METHODS = sorted(artifact_registry._vendor.rsa.pkcs1.HASH_METHODS.keys())
+ Indexable = typing.Union[typing.Tuple, typing.List[str]]
+ 
+ 
+@@ -109,7 +109,7 @@
+         self.output_help = self.output_help % self.__class__.__dict__
+ 
+     @abc.abstractmethod
+-    def perform_operation(self, indata: bytes, key: rsa.key.AbstractKey,
++    def perform_operation(self, indata: bytes, key: artifact_registry._vendor.rsa.key.AbstractKey,
+                           cli_args: Indexable) -> typing.Any:
+         """Performs the program's operation.
+ 
+@@ -158,7 +158,7 @@
+ 
+         return cli, cli_args
+ 
+-    def read_key(self, filename: str, keyform: str) -> rsa.key.AbstractKey:
++    def read_key(self, filename: str, keyform: str) -> artifact_registry._vendor.rsa.key.AbstractKey:
+         """Reads a public or private key."""
+ 
+         print('Reading %s key from %s' % (self.keyname, filename), file=sys.stderr)
+@@ -200,10 +200,10 @@
+     operation_past = 'encrypted'
+     operation_progressive = 'encrypting'
+ 
+-    def perform_operation(self, indata: bytes, pub_key: rsa.key.AbstractKey,
++    def perform_operation(self, indata: bytes, pub_key: artifact_registry._vendor.rsa.key.AbstractKey,
+                           cli_args: Indexable = ()) -> bytes:
+         """Encrypts files."""
+-        assert isinstance(pub_key, rsa.key.PublicKey)
++        assert isinstance(pub_key, artifact_registry._vendor.rsa.key.PublicKey)
+         return rsa.encrypt(indata, pub_key)
+ 
+ 
+@@ -218,10 +218,10 @@
+     operation_progressive = 'decrypting'
+     key_class = rsa.PrivateKey
+ 
+-    def perform_operation(self, indata: bytes, priv_key: rsa.key.AbstractKey,
++    def perform_operation(self, indata: bytes, priv_key: artifact_registry._vendor.rsa.key.AbstractKey,
+                           cli_args: Indexable = ()) -> bytes:
+         """Decrypts files."""
+-        assert isinstance(priv_key, rsa.key.PrivateKey)
++        assert isinstance(priv_key, artifact_registry._vendor.rsa.key.PrivateKey)
+         return rsa.decrypt(indata, priv_key)
+ 
+ 
+@@ -241,10 +241,10 @@
+     output_help = ('Name of the file to write the signature to. Written '
+                    'to stdout if this option is not present.')
+ 
+-    def perform_operation(self, indata: bytes, priv_key: rsa.key.AbstractKey,
++    def perform_operation(self, indata: bytes, priv_key: artifact_registry._vendor.rsa.key.AbstractKey,
+                           cli_args: Indexable) -> bytes:
+         """Signs files."""
+-        assert isinstance(priv_key, rsa.key.PrivateKey)
++        assert isinstance(priv_key, artifact_registry._vendor.rsa.key.PrivateKey)
+ 
+         hash_method = cli_args[1]
+         if hash_method not in HASH_METHODS:
+@@ -268,10 +268,10 @@
+     expected_cli_args = 2
+     has_output = False
+ 
+-    def perform_operation(self, indata: bytes, pub_key: rsa.key.AbstractKey,
++    def perform_operation(self, indata: bytes, pub_key: artifact_registry._vendor.rsa.key.AbstractKey,
+                           cli_args: Indexable) -> None:
+         """Verifies files."""
+-        assert isinstance(pub_key, rsa.key.PublicKey)
++        assert isinstance(pub_key, artifact_registry._vendor.rsa.key.PublicKey)
+ 
+         signature_file = cli_args[1]
+ 
+diff -urN _vendor/rsa-orig/__init__.py _vendor/rsa/__init__.py
+--- _vendor/rsa-orig/__init__.py	2021-02-24 10:43:02.000000000 +0000
++++ _vendor/rsa/__init__.py	2021-05-07 20:43:58.263391117 +0000
+@@ -21,8 +21,8 @@
+ 
+ """
+ 
+-from rsa.key import newkeys, PrivateKey, PublicKey
+-from rsa.pkcs1 import encrypt, decrypt, sign, verify, DecryptionError, \
++from artifact_registry._vendor.rsa.key import newkeys, PrivateKey, PublicKey
++from artifact_registry._vendor.rsa.pkcs1 import encrypt, decrypt, sign, verify, DecryptionError, \
+     VerificationError, find_signature_hash,  sign_hash, compute_hash
+ 
+ __author__ = "Sybren Stuvel, Barry Mead and Yesudeep Mangalapilly"
+diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
+--- _vendor/rsa-orig/key.py	2021-02-24 10:40:11.000000000 +0000
++++ _vendor/rsa/key.py	2021-05-07 20:45:01.063118180 +0000
+@@ -36,11 +36,11 @@
+ import typing
+ import warnings
+ 
+-import rsa.prime
+-import rsa.pem
+-import rsa.common
+-import rsa.randnum
+-import rsa.core
++import artifact_registry._vendor.rsa.prime
++import artifact_registry._vendor.rsa.pem
++import artifact_registry._vendor.rsa.common
++import artifact_registry._vendor.rsa.randnum
++import artifact_registry._vendor.rsa.core
+ 
+ 
+ log = logging.getLogger(__name__)
+@@ -183,8 +183,8 @@
+ 
+     def _initial_blinding_factor(self) -> int:
+         for _ in range(1000):
+-            blind_r = rsa.randnum.randint(self.n - 1)
+-            if rsa.prime.are_relatively_prime(self.n, blind_r):
++            blind_r = artifact_registry._vendor.rsa.randnum.randint(self.n - 1)
++            if artifact_registry._vendor.rsa.prime.are_relatively_prime(self.n, blind_r):
+                 return blind_r
+         raise RuntimeError('unable to find blinding factor')
+ 
+@@ -204,7 +204,7 @@
+             if self.blindfac < 0:
+                 # Compute initial blinding factor, which is rather slow to do.
+                 self.blindfac = self._initial_blinding_factor()
+-                self.blindfac_inverse = rsa.common.inverse(self.blindfac, self.n)
++                self.blindfac_inverse = artifact_registry._vendor.rsa.common.inverse(self.blindfac, self.n)
+             else:
+                 # Reuse previous blinding factor.
+                 self.blindfac = pow(self.blindfac, 2, self.n)
+@@ -290,7 +290,7 @@
+         """
+ 
+         from pyasn1.codec.der import decoder
+-        from rsa.asn1 import AsnPubKey
++        from artifact_registry._vendor.rsa.asn1 import AsnPubKey
+ 
+         (priv, _) = decoder.decode(keyfile, asn1Spec=AsnPubKey())
+         return cls(n=int(priv['modulus']), e=int(priv['publicExponent']))
+@@ -303,7 +303,7 @@
+         """
+ 
+         from pyasn1.codec.der import encoder
+-        from rsa.asn1 import AsnPubKey
++        from artifact_registry._vendor.rsa.asn1 import AsnPubKey
+ 
+         # Create the ASN object
+         asn_key = AsnPubKey()
+@@ -324,7 +324,7 @@
+         :return: a PublicKey object
+         """
+ 
+-        der = rsa.pem.load_pem(keyfile, 'RSA PUBLIC KEY')
++        der = artifact_registry._vendor.rsa.pem.load_pem(keyfile, 'RSA PUBLIC KEY')
+         return cls._load_pkcs1_der(der)
+ 
+     def _save_pkcs1_pem(self) -> bytes:
+@@ -335,7 +335,7 @@
+         """
+ 
+         der = self._save_pkcs1_der()
+-        return rsa.pem.save_pem(der, 'RSA PUBLIC KEY')
++        return artifact_registry._vendor.rsa.pem.save_pem(der, 'RSA PUBLIC KEY')
+ 
+     @classmethod
+     def load_pkcs1_openssl_pem(cls, keyfile: bytes) -> 'PublicKey':
+@@ -353,7 +353,7 @@
+         :return: a PublicKey object
+         """
+ 
+-        der = rsa.pem.load_pem(keyfile, 'PUBLIC KEY')
++        der = artifact_registry._vendor.rsa.pem.load_pem(keyfile, 'PUBLIC KEY')
+         return cls.load_pkcs1_openssl_der(der)
+ 
+     @classmethod
+@@ -365,7 +365,7 @@
+         :return: a PublicKey object
+         """
+ 
+-        from rsa.asn1 import OpenSSLPubKey
++        from artifact_registry._vendor.rsa.asn1 import OpenSSLPubKey
+         from pyasn1.codec.der import decoder
+         from pyasn1.type import univ
+ 
+@@ -412,7 +412,7 @@
+         # Calculate exponents and coefficient.
+         self.exp1 = int(d % (p - 1))
+         self.exp2 = int(d % (q - 1))
+-        self.coef = rsa.common.inverse(q, p)
++        self.coef = artifact_registry._vendor.rsa.common.inverse(q, p)
+ 
+     def __getitem__(self, key: str) -> int:
+         return getattr(self, key)
+@@ -463,7 +463,7 @@
+ 
+         # Blinding and un-blinding should be using the same factor
+         blinded, blindfac_inverse = self.blind(encrypted)
+-        decrypted = rsa.core.decrypt_int(blinded, self.d, self.n)
++        decrypted = artifact_registry._vendor.rsa.core.decrypt_int(blinded, self.d, self.n)
+         return self.unblind(decrypted, blindfac_inverse)
+ 
+     def blinded_encrypt(self, message: int) -> int:
+@@ -477,7 +477,7 @@
+         """
+ 
+         blinded, blindfac_inverse = self.blind(message)
+-        encrypted = rsa.core.encrypt_int(blinded, self.d, self.n)
++        encrypted = artifact_registry._vendor.rsa.core.encrypt_int(blinded, self.d, self.n)
+         return self.unblind(encrypted, blindfac_inverse)
+ 
+     @classmethod
+@@ -588,7 +588,7 @@
+         :return: a PrivateKey object
+         """
+ 
+-        der = rsa.pem.load_pem(keyfile, b'RSA PRIVATE KEY')
++        der = artifact_registry._vendor.rsa.pem.load_pem(keyfile, b'RSA PRIVATE KEY')
+         return cls._load_pkcs1_der(der)
+ 
+     def _save_pkcs1_pem(self) -> bytes:
+@@ -599,11 +599,11 @@
+         """
+ 
+         der = self._save_pkcs1_der()
+-        return rsa.pem.save_pem(der, b'RSA PRIVATE KEY')
++        return artifact_registry._vendor.rsa.pem.save_pem(der, b'RSA PRIVATE KEY')
+ 
+ 
+ def find_p_q(nbits: int,
+-             getprime_func: typing.Callable[[int], int] = rsa.prime.getprime,
++             getprime_func: typing.Callable[[int], int] = artifact_registry._vendor.rsa.prime.getprime,
+              accurate: bool = True) -> typing.Tuple[int, int]:
+     """Returns a tuple of two different primes of nbits bits each.
+ 
+@@ -663,7 +663,7 @@
+             return True
+ 
+         # Make sure we have just the right amount of bits
+-        found_size = rsa.common.bit_size(p * q)
++        found_size = artifact_registry._vendor.rsa.common.bit_size(p * q)
+         return total_bits == found_size
+ 
+     # Keep choosing other primes until they match our requirements.
+@@ -698,9 +698,9 @@
+     phi_n = (p - 1) * (q - 1)
+ 
+     try:
+-        d = rsa.common.inverse(exponent, phi_n)
+-    except rsa.common.NotRelativePrimeError as ex:
+-        raise rsa.common.NotRelativePrimeError(
++        d = artifact_registry._vendor.rsa.common.inverse(exponent, phi_n)
++    except artifact_registry._vendor.rsa.common.NotRelativePrimeError as ex:
++        raise artifact_registry._vendor.rsa.common.NotRelativePrimeError(
+             exponent, phi_n, ex.d,
+             msg="e (%d) and phi_n (%d) are not relatively prime (divider=%i)" %
+                 (exponent, phi_n, ex.d))
+@@ -798,7 +798,7 @@
+         def getprime_func(nbits: int) -> int:
+             return parallel.getprime(nbits, poolsize=poolsize)
+     else:
+-        getprime_func = rsa.prime.getprime
++        getprime_func = artifact_registry._vendor.rsa.prime.getprime
+ 
+     # Generate the key components
+     (p, q, e, d) = gen_keys(nbits, getprime_func, accurate=accurate, exponent=exponent)
+diff -urN _vendor/rsa-orig/parallel.py _vendor/rsa/parallel.py
+--- _vendor/rsa-orig/parallel.py	2021-01-10 10:09:07.000000000 +0000
++++ _vendor/rsa/parallel.py	2021-05-07 20:45:10.014791990 +0000
+@@ -25,16 +25,16 @@
+ import multiprocessing as mp
+ from multiprocessing.connection import Connection
+ 
+-import rsa.prime
+-import rsa.randnum
++import artifact_registry._vendor.rsa.prime
++import artifact_registry._vendor.rsa.randnum
+ 
+ 
+ def _find_prime(nbits: int, pipe: Connection) -> None:
+     while True:
+-        integer = rsa.randnum.read_random_odd_int(nbits)
++        integer = artifact_registry._vendor.rsa.randnum.read_random_odd_int(nbits)
+ 
+         # Test for primeness
+-        if rsa.prime.is_prime(integer):
++        if artifact_registry._vendor.rsa.prime.is_prime(integer):
+             pipe.send(integer)
+             return
+ 
+diff -urN _vendor/rsa-orig/pkcs1_v2.py _vendor/rsa/pkcs1_v2.py
+--- _vendor/rsa-orig/pkcs1_v2.py	2021-01-10 10:09:07.000000000 +0000
++++ _vendor/rsa/pkcs1_v2.py	2021-05-07 20:45:43.722329226 +0000
+@@ -18,7 +18,7 @@
+ documentation is RFC 2437: https://tools.ietf.org/html/rfc2437
+ """
+ 
+-from rsa import (
++from artifact_registry._vendor.rsa import (
+     common,
+     pkcs1,
+     transform,
+diff -urN _vendor/rsa-orig/prime.py _vendor/rsa/prime.py
+--- _vendor/rsa-orig/prime.py	2021-01-10 10:09:07.000000000 +0000
++++ _vendor/rsa/prime.py	2021-05-07 20:46:04.431888079 +0000
+@@ -18,8 +18,8 @@
+ Roberto Tamassia, 2002.
+ """
+ 
+-import rsa.common
+-import rsa.randnum
++import artifact_registry._vendor.rsa.common
++import artifact_registry._vendor.rsa.randnum
+ 
+ __all__ = ['getprime', 'are_relatively_prime']
+ 
+@@ -50,7 +50,7 @@
+     """
+ 
+     # Calculate number bitsize.
+-    bitsize = rsa.common.bit_size(number)
++    bitsize = artifact_registry._vendor.rsa.common.bit_size(number)
+     # Set number of rounds.
+     if bitsize >= 1536:
+         return 3
+@@ -94,7 +94,7 @@
+     # Test k witnesses.
+     for _ in range(k):
+         # Generate random integer a, where 2 <= a <= (n - 2)
+-        a = rsa.randnum.randint(n - 3) + 1
++        a = artifact_registry._vendor.rsa.randnum.randint(n - 3) + 1
+ 
+         x = pow(a, d, n)
+         if x == 1 or x == n - 1:
+@@ -160,7 +160,7 @@
+     assert nbits > 3  # the loop wil hang on too small numbers
+ 
+     while True:
+-        integer = rsa.randnum.read_random_odd_int(nbits)
++        integer = artifact_registry._vendor.rsa.randnum.read_random_odd_int(nbits)
+ 
+         # Test for primeness
+         if is_prime(integer):
+diff -urN _vendor/rsa-orig/randnum.py _vendor/rsa/randnum.py
+--- _vendor/rsa-orig/randnum.py	2021-01-10 10:09:07.000000000 +0000
++++ _vendor/rsa/randnum.py	2021-05-07 20:46:16.527798563 +0000
+@@ -19,7 +19,7 @@
+ import os
+ import struct
+ 
+-from rsa import common, transform
++from artifact_registry._vendor.rsa import common, transform
+ 
+ 
+ def read_random_bits(nbits: int) -> bytes:
+diff -urN _vendor/rsa-orig/util.py _vendor/rsa/util.py
+--- _vendor/rsa-orig/util.py	2021-01-10 10:09:07.000000000 +0000
++++ _vendor/rsa/util.py	2021-05-07 20:46:36.198279201 +0000
+@@ -17,7 +17,7 @@
+ import sys
+ from optparse import OptionParser
+ 
+-import rsa.key
++import artifact_registry._vendor.rsa.key
+ 
+ 
+ def private_to_public() -> None:
+@@ -58,8 +58,8 @@
+     assert type(in_data) == bytes, type(in_data)
+ 
+     # Take the public fields and create a public key
+-    priv_key = rsa.key.PrivateKey.load_pkcs1(in_data, cli.inform)
+-    pub_key = rsa.key.PublicKey(priv_key.n, priv_key.e)
++    priv_key = artifact_registry._vendor.rsa.key.PrivateKey.load_pkcs1(in_data, cli.inform)
++    pub_key = artifact_registry._vendor.rsa.key.PublicKey(priv_key.n, priv_key.e)
+ 
+     # Save to the output file
+     out_data = pub_key.save_pkcs1(cli.outform)

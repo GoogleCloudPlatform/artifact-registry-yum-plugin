@@ -1,0 +1,3398 @@
+diff -urN _vendor/google-orig/auth/app_engine.py _vendor/google/auth/app_engine.py
+--- _vendor/google-orig/auth/app_engine.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/app_engine.py	2021-05-07 20:38:11.507290067 +0000
+@@ -24,9 +24,9 @@
+ 
+ import datetime
+ 
+-from google.auth import _helpers
+-from google.auth import credentials
+-from google.auth import crypt
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import credentials
++from artifact_registry._vendor.google.auth import crypt
+ 
+ # pytype: disable=import-error
+ try:
+@@ -39,7 +39,7 @@
+ class Signer(crypt.Signer):
+     """Signs messages using the App Engine App Identity service.
+ 
+-    This can be used in place of :class:`google.auth.crypt.Signer` when
++    This can be used in place of :class:`artifact_registry._vendor.google.auth.crypt.Signer` when
+     running in the App Engine standard environment.
+     """
+ 
+diff -urN _vendor/google-orig/auth/aws.py _vendor/google/auth/aws.py
+--- _vendor/google-orig/auth/aws.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/aws.py	2021-05-07 20:38:11.509290218 +0000
+@@ -47,10 +47,10 @@
+ from six.moves import http_client
+ from six.moves import urllib
+ 
+-from google.auth import _helpers
+-from google.auth import environment_vars
+-from google.auth import exceptions
+-from google.auth import external_account
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import external_account
+ 
+ # AWS Signature Version 4 signing algorithm identifier.
+ _AWS_ALGORITHM = "AWS4-HMAC-SHA256"
+@@ -371,7 +371,7 @@
+                 Google client library. Use 'scopes' for user-defined scopes.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If an error is encountered during
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If an error is encountered during
+                 access token retrieval logic.
+             ValueError: For invalid parameters.
+ 
+@@ -445,7 +445,7 @@
+             https://cloud.google.com/iam/docs/access-resources-aws#exchange-token
+ 
+         Args:
+-            request (google.auth.transport.Request): A callable used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+                 HTTP requests.
+         Returns:
+             str: The retrieved subject token.
+@@ -508,7 +508,7 @@
+         AWS_DEFAULT_REGION environment variable or from the AWS metadata server.
+ 
+         Args:
+-            request (google.auth.transport.Request): A callable used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+                 HTTP requests.
+             url (str): The AWS metadata server region URL.
+ 
+@@ -516,7 +516,7 @@
+             str: The current AWS region.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If an error occurs while
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If an error occurs while
+                 retrieving the AWS region.
+         """
+         # The AWS metadata server is not available in some AWS environments
+@@ -556,14 +556,14 @@
+         or from the AWS metadata server.
+ 
+         Args:
+-            request (google.auth.transport.Request): A callable used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+                 HTTP requests.
+ 
+         Returns:
+             Mapping[str, str]: The AWS security credentials dictionary object.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If an error occurs while
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If an error occurs while
+                 retrieving the AWS security credentials.
+         """
+ 
+@@ -599,7 +599,7 @@
+         requests from the AWS metadata server.
+ 
+         Args:
+-            request (google.auth.transport.Request): A callable used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+                 HTTP requests.
+             role_name (str): The AWS role name required by the AWS metadata
+                 server security_credentials endpoint in order to return the
+@@ -610,7 +610,7 @@
+                 response.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If an error occurs while
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If an error occurs while
+                 retrieving the AWS security credentials.
+         """
+         headers = {"Content-Type": "application/json"}
+@@ -643,14 +643,14 @@
+         the AWS security credentials needed to sign requests to AWS APIs.
+ 
+         Args:
+-            request (google.auth.transport.Request): A callable used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+                 HTTP requests.
+ 
+         Returns:
+             str: The AWS role name.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If an error occurs while
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If an error occurs while
+                 retrieving the AWS role name.
+         """
+         if self._security_credentials_url is None:
+@@ -683,7 +683,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.aws.Credentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.aws.Credentials: The constructed credentials.
+ 
+         Raises:
+             ValueError: For invalid parameters.
+@@ -711,7 +711,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.aws.Credentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.aws.Credentials: The constructed credentials.
+         """
+         with io.open(filename, "r", encoding="utf-8") as json_file:
+             data = json.load(json_file)
+diff -urN _vendor/google-orig/auth/_cloud_sdk.py _vendor/google/auth/_cloud_sdk.py
+--- _vendor/google-orig/auth/_cloud_sdk.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/_cloud_sdk.py	2021-05-07 20:38:11.493289014 +0000
+@@ -20,8 +20,8 @@
+ 
+ import six
+ 
+-from google.auth import environment_vars
+-from google.auth import exceptions
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
+ 
+ 
+ # The ~/.config subdirectory containing gcloud credentials.
+@@ -131,7 +131,7 @@
+         str: The user access token.
+ 
+     Raises:
+-        google.auth.exceptions.UserAccessTokenError: if failed to get access
++        artifact_registry._vendor.google.auth.exceptions.UserAccessTokenError: if failed to get access
+             token from gcloud.
+     """
+     if os.name == "nt":
+diff -urN _vendor/google-orig/auth/compute_engine/credentials.py _vendor/google/auth/compute_engine/credentials.py
+--- _vendor/google-orig/auth/compute_engine/credentials.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/compute_engine/credentials.py	2021-05-07 20:38:11.515290669 +0000
+@@ -23,13 +23,13 @@
+ 
+ import six
+ 
+-from google.auth import _helpers
+-from google.auth import credentials
+-from google.auth import exceptions
+-from google.auth import iam
+-from google.auth import jwt
+-from google.auth.compute_engine import _metadata
+-from google.oauth2 import _client
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import credentials
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import iam
++from artifact_registry._vendor.google.auth import jwt
++from artifact_registry._vendor.google.auth.compute_engine import _metadata
++from artifact_registry._vendor.google.oauth2 import _client
+ 
+ 
+ class Credentials(credentials.Scoped, credentials.CredentialsWithQuotaProject):
+@@ -81,7 +81,7 @@
+         Updates the scopes and retrieves the full service account email.
+ 
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+         """
+         info = _metadata.get_service_account_info(
+@@ -98,11 +98,11 @@
+         """Refresh the access token and scopes.
+ 
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If the Compute Engine metadata
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If the Compute Engine metadata
+                 service can't be reached if if the instance has not
+                 credentials.
+         """
+@@ -181,7 +181,7 @@
+     ):
+         """
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+             target_audience (str): The intended audience for these credentials,
+                 used when requesting the ID Token. The ID Token's ``aud`` claim
+@@ -192,7 +192,7 @@
+             service_account_email (str): Optional explicit service account to
+                 use to sign JWT tokens.
+                 By default, this is the default GCE service account.
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+                 In case the signer is specified, the request argument will be
+                 ignored.
+             use_metadata_identity_endpoint (bool): Whether to use GCE metadata
+@@ -254,7 +254,7 @@
+             target_audience (str): The intended audience for these credentials,
+             used when requesting the ID Token.
+         Returns:
+-            google.auth.service_account.IDTokenCredentials: A new credentials
++            artifact_registry._vendor.google.auth.service_account.IDTokenCredentials: A new credentials
+                 instance.
+         """
+         # since the signer is already instantiated,
+@@ -335,14 +335,14 @@
+         """Request ID token from metadata identity endpoint.
+ 
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+ 
+         Returns:
+             Tuple[str, datetime.datetime]: The ID token and the expiry of the ID token.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If the Compute Engine metadata
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If the Compute Engine metadata
+                 service can't be reached or if the instance has no credentials.
+             ValueError: If extracting expiry from the obtained ID token fails.
+         """
+@@ -361,11 +361,11 @@
+         """Refreshes the ID token.
+ 
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If the credentials could
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If the credentials could
+                 not be refreshed.
+             ValueError: If extracting expiry from the obtained ID token fails.
+         """
+diff -urN _vendor/google-orig/auth/compute_engine/__init__.py _vendor/google/auth/compute_engine/__init__.py
+--- _vendor/google-orig/auth/compute_engine/__init__.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/compute_engine/__init__.py	2021-05-07 20:38:11.511290368 +0000
+@@ -14,8 +14,8 @@
+ 
+ """Google Compute Engine authentication."""
+ 
+-from google.auth.compute_engine.credentials import Credentials
+-from google.auth.compute_engine.credentials import IDTokenCredentials
++from artifact_registry._vendor.google.auth.compute_engine.credentials import Credentials
++from artifact_registry._vendor.google.auth.compute_engine.credentials import IDTokenCredentials
+ 
+ 
+ __all__ = ["Credentials", "IDTokenCredentials"]
+diff -urN _vendor/google-orig/auth/compute_engine/_metadata.py _vendor/google/auth/compute_engine/_metadata.py
+--- _vendor/google-orig/auth/compute_engine/_metadata.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/compute_engine/_metadata.py	2021-05-07 20:38:11.513290519 +0000
+@@ -26,9 +26,9 @@
+ from six.moves import http_client
+ from six.moves.urllib import parse as urlparse
+ 
+-from google.auth import _helpers
+-from google.auth import environment_vars
+-from google.auth import exceptions
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
+ 
+ _LOGGER = logging.getLogger(__name__)
+ 
+@@ -64,7 +64,7 @@
+     """Checks to see if the metadata server is available.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         timeout (int): How long to wait for the metadata server to respond.
+         retry_count (int): How many times to attempt connecting to metadata
+@@ -114,7 +114,7 @@
+     """Fetch a resource from the metadata server.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         path (str): The resource to retrieve. For example,
+             ``'instance/service-accounts/default'``.
+@@ -133,7 +133,7 @@
+             returned as a string.
+ 
+     Raises:
+-        google.auth.exceptions.TransportError: if an error occurred while
++        artifact_registry._vendor.google.auth.exceptions.TransportError: if an error occurred while
+             retrieving metadata.
+     """
+     base_url = urlparse.urljoin(root, path)
+@@ -192,14 +192,14 @@
+     """Get the Google Cloud Project ID from the metadata server.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+ 
+     Returns:
+         str: The project ID
+ 
+     Raises:
+-        google.auth.exceptions.TransportError: if an error occurred while
++        artifact_registry._vendor.google.auth.exceptions.TransportError: if an error occurred while
+             retrieving metadata.
+     """
+     return get(request, "project/project-id")
+@@ -209,7 +209,7 @@
+     """Get information about a service account from the metadata server.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         service_account (str): The string 'default' or a service account email
+             address. The determines which service account for which to acquire
+@@ -225,7 +225,7 @@
+             }
+ 
+     Raises:
+-        google.auth.exceptions.TransportError: if an error occurred while
++        artifact_registry._vendor.google.auth.exceptions.TransportError: if an error occurred while
+             retrieving metadata.
+     """
+     path = "instance/service-accounts/{0}/".format(service_account)
+@@ -238,7 +238,7 @@
+     """Get the OAuth 2.0 access token for a service account.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         service_account (str): The string 'default' or a service account email
+             address. The determines which service account for which to acquire
+@@ -249,7 +249,7 @@
+         Union[str, datetime]: The access token and its expiration.
+ 
+     Raises:
+-        google.auth.exceptions.TransportError: if an error occurred while
++        artifact_registry._vendor.google.auth.exceptions.TransportError: if an error occurred while
+             retrieving metadata.
+     """
+     if scopes:
+diff -urN _vendor/google-orig/auth/_credentials_async.py _vendor/google/auth/_credentials_async.py
+--- _vendor/google-orig/auth/_credentials_async.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/_credentials_async.py	2021-05-07 20:38:11.494289089 +0000
+@@ -20,12 +20,12 @@
+ 
+ import six
+ 
+-from google.auth import credentials
++from artifact_registry._vendor.google.auth import credentials
+ 
+ 
+ @six.add_metaclass(abc.ABCMeta)
+ class Credentials(credentials.Credentials):
+-    """Async inherited credentials class from google.auth.credentials.
++    """Async inherited credentials class from artifact_registry._vendor.google.auth.credentials.
+     The added functionality is the before_request call which requires
+     async/await syntax.
+     All credentials have a :attr:`token` that is used for authentication and
+@@ -51,7 +51,7 @@
+         apply the token to the authentication header.
+ 
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+             method (str): The request's HTTP method or the RPC method being
+                 invoked.
+@@ -150,18 +150,18 @@
+ 
+     This helper function is useful when you do not know (or care to know) the
+     specific type of credentials you are using (such as when you use
+-    :func:`google.auth.default`). This function will call
++    :func:`artifact_registry._vendor.google.auth.default`). This function will call
+     :meth:`Scoped.with_scopes` if the credentials are scoped credentials and if
+     the credentials require scoping. Otherwise, it will return the credentials
+     as-is.
+ 
+     Args:
+-        credentials (google.auth.credentials.Credentials): The credentials to
++        credentials (artifact_registry._vendor.google.auth.credentials.Credentials): The credentials to
+             scope if necessary.
+         scopes (Sequence[str]): The list of scopes to use.
+ 
+     Returns:
+-        google.auth._credentials_async.Credentials: Either a new set of scoped
++        artifact_registry._vendor.google.auth._credentials_async.Credentials: Either a new set of scoped
+             credentials, or the passed in credentials instance if no scoping
+             was required.
+     """
+diff -urN _vendor/google-orig/auth/credentials.py _vendor/google/auth/credentials.py
+--- _vendor/google-orig/auth/credentials.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/credentials.py	2021-05-07 20:38:11.517290820 +0000
+@@ -19,7 +19,7 @@
+ 
+ import six
+ 
+-from google.auth import _helpers
++from artifact_registry._vendor.google.auth import _helpers
+ 
+ 
+ @six.add_metaclass(abc.ABCMeta)
+@@ -87,11 +87,11 @@
+         """Refreshes the access token.
+ 
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If the credentials could
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If the credentials could
+                 not be refreshed.
+         """
+         # pylint: disable=missing-raises-doc
+@@ -119,7 +119,7 @@
+         apply the token to the authentication header.
+ 
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+             method (str): The request's HTTP method or the RPC method being
+                 invoked.
+@@ -145,7 +145,7 @@
+                 billing purposes
+ 
+         Returns:
+-            google.oauth2.credentials.Credentials: A new credentials instance.
++            artifact_registry._vendor.google.oauth2.credentials.Credentials: A new credentials instance.
+         """
+         raise NotImplementedError("This credential does not support quota project.")
+ 
+@@ -306,20 +306,20 @@
+ 
+     This helper function is useful when you do not know (or care to know) the
+     specific type of credentials you are using (such as when you use
+-    :func:`google.auth.default`). This function will call
++    :func:`artifact_registry._vendor.google.auth.default`). This function will call
+     :meth:`Scoped.with_scopes` if the credentials are scoped credentials and if
+     the credentials require scoping. Otherwise, it will return the credentials
+     as-is.
+ 
+     Args:
+-        credentials (google.auth.credentials.Credentials): The credentials to
++        credentials (artifact_registry._vendor.google.auth.credentials.Credentials): The credentials to
+             scope if necessary.
+         scopes (Sequence[str]): The list of scopes to use.
+         default_scopes (Sequence[str]): Default scopes passed by a
+             Google client library. Use 'scopes' for user-defined scopes.
+ 
+     Returns:
+-        google.auth.credentials.Credentials: Either a new set of scoped
++        artifact_registry._vendor.google.auth.credentials.Credentials: Either a new set of scoped
+             credentials, or the passed in credentials instance if no scoping
+             was required.
+     """
+@@ -356,7 +356,7 @@
+ 
+     @abc.abstractproperty
+     def signer(self):
+-        """google.auth.crypt.Signer: The signer used to sign bytes."""
++        """artifact_registry._vendor.google.auth.crypt.Signer: The signer used to sign bytes."""
+         # pylint: disable=missing-raises-doc
+         # (pylint doesn't recognize that this is abstract)
+         raise NotImplementedError("Signer must be implemented.")
+diff -urN _vendor/google-orig/auth/crypt/base.py _vendor/google/auth/crypt/base.py
+--- _vendor/google-orig/auth/crypt/base.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/crypt/base.py	2021-05-07 20:38:11.525291422 +0000
+@@ -83,7 +83,7 @@
+             key_id (str): An optional key id used to identify the private key.
+ 
+         Returns:
+-            google.auth.crypt.Signer: The constructed signer.
++            artifact_registry._vendor.google.auth.crypt.Signer: The constructed signer.
+ 
+         Raises:
+             ValueError: If the key cannot be parsed.
+@@ -100,7 +100,7 @@
+                 format.
+ 
+         Returns:
+-            google.auth.crypt.Signer: The constructed signer.
++            artifact_registry._vendor.google.auth.crypt.Signer: The constructed signer.
+ 
+         Raises:
+             ValueError: If the info is not in the expected format.
+@@ -123,7 +123,7 @@
+             filename (str): The path to the service account .json file.
+ 
+         Returns:
+-            google.auth.crypt.Signer: The constructed signer.
++            artifact_registry._vendor.google.auth.crypt.Signer: The constructed signer.
+         """
+         with io.open(filename, "r", encoding="utf-8") as json_file:
+             data = json.load(json_file)
+diff -urN _vendor/google-orig/auth/crypt/_cryptography_rsa.py _vendor/google/auth/crypt/_cryptography_rsa.py
+--- _vendor/google-orig/auth/crypt/_cryptography_rsa.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/crypt/_cryptography_rsa.py	2021-05-07 20:38:11.520291046 +0000
+@@ -15,7 +15,7 @@
+ """RSA verifier and signer that use the ``cryptography`` library.
+ 
+ This is a much faster implementation than the default (in
+-``google.auth.crypt._python_rsa``), which depends on the pure-Python
++``artifact_registry._vendor.google.auth.crypt._python_rsa``), which depends on the pure-Python
+ ``rsa`` library.
+ """
+ 
+@@ -26,8 +26,8 @@
+ from cryptography.hazmat.primitives.asymmetric import padding
+ import cryptography.x509
+ 
+-from google.auth import _helpers
+-from google.auth.crypt import base
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth.crypt import base
+ 
+ _CERTIFICATE_MARKER = b"-----BEGIN CERTIFICATE-----"
+ _BACKEND = backends.default_backend()
+@@ -120,7 +120,7 @@
+             key_id (str): An optional key id used to identify the private key.
+ 
+         Returns:
+-            google.auth.crypt._cryptography_rsa.RSASigner: The
++            artifact_registry._vendor.google.auth.crypt._cryptography_rsa.RSASigner: The
+             constructed signer.
+ 
+         Raises:
+diff -urN _vendor/google-orig/auth/crypt/es256.py _vendor/google/auth/crypt/es256.py
+--- _vendor/google-orig/auth/crypt/es256.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/crypt/es256.py	2021-05-07 20:38:11.526291497 +0000
+@@ -26,8 +26,8 @@
+ from cryptography.hazmat.primitives.asymmetric.utils import encode_dss_signature
+ import cryptography.x509
+ 
+-from google.auth import _helpers
+-from google.auth.crypt import base
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth.crypt import base
+ 
+ 
+ _CERTIFICATE_MARKER = b"-----BEGIN CERTIFICATE-----"
+@@ -132,7 +132,7 @@
+             key_id (str): An optional key id used to identify the private key.
+ 
+         Returns:
+-            google.auth.crypt._cryptography_rsa.RSASigner: The
++            artifact_registry._vendor.google.auth.crypt._cryptography_rsa.RSASigner: The
+             constructed signer.
+ 
+         Raises:
+diff -urN _vendor/google-orig/auth/crypt/__init__.py _vendor/google/auth/crypt/__init__.py
+--- _vendor/google-orig/auth/crypt/__init__.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/crypt/__init__.py	2021-05-07 20:38:11.518290895 +0000
+@@ -39,11 +39,11 @@
+ 
+ import six
+ 
+-from google.auth.crypt import base
+-from google.auth.crypt import rsa
++from artifact_registry._vendor.google.auth.crypt import base
++from artifact_registry._vendor.google.auth.crypt import rsa
+ 
+ try:
+-    from google.auth.crypt import es256
++    from artifact_registry._vendor.google.auth.crypt import es256
+ except ImportError:  # pragma: NO COVER
+     es256 = None
+ 
+@@ -83,7 +83,7 @@
+         signature (Union[str, bytes]): The cryptographic signature to check.
+         certs (Union[Sequence, str, bytes]): The certificate or certificates
+             to use to check the signature.
+-        verifier_cls (Optional[~google.auth.crypt.base.Signer]): Which verifier
++        verifier_cls (Optional[~artifact_registry._vendor.google.auth.crypt.base.Signer]): Which verifier
+             class to use for verification. This can be used to select different
+             algorithms, such as RSA or ECDSA. Default value is :class:`RSAVerifier`.
+ 
+diff -urN _vendor/google-orig/auth/crypt/_python_rsa.py _vendor/google/auth/crypt/_python_rsa.py
+--- _vendor/google-orig/auth/crypt/_python_rsa.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/crypt/_python_rsa.py	2021-05-07 20:51:49.255843690 +0000
+@@ -25,11 +25,11 @@
+ from pyasn1_modules import pem
+ from pyasn1_modules.rfc2459 import Certificate
+ from pyasn1_modules.rfc5208 import PrivateKeyInfo
+-import rsa
++from artifact_registry._vendor import rsa
+ import six
+ 
+-from google.auth import _helpers
+-from google.auth.crypt import base
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth.crypt import base
+ 
+ _POW2 = (128, 64, 32, 16, 8, 4, 2, 1)
+ _CERTIFICATE_MARKER = b"-----BEGIN CERTIFICATE-----"
+@@ -88,7 +88,7 @@
+                 x509 public key certificate.
+ 
+         Returns:
+-            google.auth.crypt._python_rsa.RSAVerifier: The constructed verifier.
++            artifact_registry._vendor.google.auth.crypt._python_rsa.RSAVerifier: The constructed verifier.
+ 
+         Raises:
+             ValueError: If the public_key can't be parsed.
+@@ -144,7 +144,7 @@
+             key_id (str): An optional key id used to identify the private key.
+ 
+         Returns:
+-            google.auth.crypt.Signer: The constructed signer.
++            artifact_registry._vendor.google.auth.crypt.Signer: The constructed signer.
+ 
+         Raises:
+             ValueError: If the key cannot be parsed as PKCS#1 or PKCS#8 in
+diff -urN _vendor/google-orig/auth/crypt/rsa.py _vendor/google/auth/crypt/rsa.py
+--- _vendor/google-orig/auth/crypt/rsa.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/crypt/rsa.py	2021-05-07 20:38:11.528291648 +0000
+@@ -17,14 +17,14 @@
+ 
+ try:
+     # Prefer cryptograph-based RSA implementation.
+-    from google.auth.crypt import _cryptography_rsa
++    from artifact_registry._vendor.google.auth.crypt import _cryptography_rsa
+ 
+     RSASigner = _cryptography_rsa.RSASigner
+     RSAVerifier = _cryptography_rsa.RSAVerifier
+ except ImportError:  # pragma: NO COVER
+     # Fallback to pure-python RSA implementation if cryptography is
+     # unavailable.
+-    from google.auth.crypt import _python_rsa
++    from artifact_registry._vendor.google.auth.crypt import _python_rsa
+ 
+     RSASigner = _python_rsa.RSASigner
+     RSAVerifier = _python_rsa.RSAVerifier
+diff -urN _vendor/google-orig/auth/_default_async.py _vendor/google/auth/_default_async.py
+--- _vendor/google-orig/auth/_default_async.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/_default_async.py	2021-05-07 20:38:11.499289466 +0000
+@@ -23,9 +23,9 @@
+ 
+ import six
+ 
+-from google.auth import _default
+-from google.auth import environment_vars
+-from google.auth import exceptions
++from artifact_registry._vendor.google.auth import _default
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
+ 
+ 
+ def load_credentials_from_file(filename, scopes=None, quota_project_id=None):
+@@ -43,12 +43,12 @@
+                 quota and billing.
+ 
+     Returns:
+-        Tuple[google.auth.credentials.Credentials, Optional[str]]: Loaded
++        Tuple[artifact_registry._vendor.google.auth.credentials.Credentials, Optional[str]]: Loaded
+             credentials and the project ID. Authorized user credentials do not
+             have the project ID information.
+ 
+     Raises:
+-        google.auth.exceptions.DefaultCredentialsError: if the file is in the
++        artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError: if the file is in the
+             wrong format or is missing.
+     """
+     if not os.path.exists(filename):
+@@ -70,7 +70,7 @@
+     credential_type = info.get("type")
+ 
+     if credential_type == _default._AUTHORIZED_USER_TYPE:
+-        from google.oauth2 import _credentials_async as credentials
++        from artifact_registry._vendor.google.oauth2 import _credentials_async as credentials
+ 
+         try:
+             credentials = credentials.Credentials.from_authorized_user_info(
+@@ -85,7 +85,7 @@
+         return credentials, None
+ 
+     elif credential_type == _default._SERVICE_ACCOUNT_TYPE:
+-        from google.oauth2 import _service_account_async as service_account
++        from artifact_registry._vendor.google.oauth2 import _service_account_async as service_account
+ 
+         try:
+             credentials = service_account.Credentials.from_service_account_info(
+@@ -108,7 +108,7 @@
+ 
+ def _get_gcloud_sdk_credentials():
+     """Gets the credentials and project ID from the Cloud SDK."""
+-    from google.auth import _cloud_sdk
++    from artifact_registry._vendor.google.auth import _cloud_sdk
+ 
+     # Check if application default credentials exist.
+     credentials_filename = _cloud_sdk.get_application_default_credentials_path()
+@@ -127,7 +127,7 @@
+ def _get_explicit_environ_credentials():
+     """Gets credentials from the GOOGLE_APPLICATION_CREDENTIALS environment
+     variable."""
+-    from google.auth import _cloud_sdk
++    from artifact_registry._vendor.google.auth import _cloud_sdk
+ 
+     cloud_sdk_adc_path = _cloud_sdk.get_application_default_credentials_path()
+     explicit_file = os.environ.get(environment_vars.CREDENTIALS)
+@@ -203,7 +203,7 @@
+        environment`_ (second generation) then the credentials and project ID
+        are obtained from the `Metadata Service`_.
+     5. If no credentials are found,
+-       :class:`~google.auth.exceptions.DefaultCredentialsError` will be raised.
++       :class:`~artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError` will be raised.
+ 
+     .. _Application Default Credentials: https://developers.google.com\
+             /identity/protocols/application-default-credentials
+@@ -220,32 +220,32 @@
+ 
+     Example::
+ 
+-        import google.auth
++        import artifact_registry._vendor.google.auth
+ 
+-        credentials, project_id = google.auth.default()
++        credentials, project_id = artifact_registry._vendor.google.auth.default()
+ 
+     Args:
+         scopes (Sequence[str]): The list of scopes for the credentials. If
+             specified, the credentials will automatically be scoped if
+             necessary.
+-        request (google.auth.transport.Request): An object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): An object used to make
+             HTTP requests. This is used to detect whether the application
+             is running on Compute Engine. If not specified, then it will
+             use the standard library http client to make requests.
+         quota_project_id (Optional[str]):  The project ID used for
+             quota and billing.
+     Returns:
+-        Tuple[~google.auth.credentials.Credentials, Optional[str]]:
++        Tuple[~artifact_registry._vendor.google.auth.credentials.Credentials, Optional[str]]:
+             the current environment's credentials and project ID. Project ID
+             may be None, which indicates that the Project ID could not be
+             ascertained from the environment.
+ 
+     Raises:
+-        ~google.auth.exceptions.DefaultCredentialsError:
++        ~artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError:
+             If no credentials were found, or if the credentials found were
+             invalid.
+     """
+-    from google.auth._credentials_async import with_scopes_if_required
++    from artifact_registry._vendor.google.auth._credentials_async import with_scopes_if_required
+ 
+     explicit_project_id = os.environ.get(
+         environment_vars.PROJECT, os.environ.get(environment_vars.LEGACY_PROJECT)
+diff -urN _vendor/google-orig/auth/_default.py _vendor/google/auth/_default.py
+--- _vendor/google-orig/auth/_default.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/_default.py	2021-05-07 20:38:11.497289315 +0000
+@@ -25,9 +25,9 @@
+ 
+ import six
+ 
+-from google.auth import environment_vars
+-from google.auth import exceptions
+-import google.auth.transport._http_client
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
++import artifact_registry._vendor.google.auth.transport._http_client
+ 
+ _LOGGER = logging.getLogger(__name__)
+ 
+@@ -64,7 +64,7 @@
+     are problematic because they may not have APIs enabled and have limited
+     quota. If this is the case, warn about it.
+     """
+-    from google.auth import _cloud_sdk
++    from artifact_registry._vendor.google.auth import _cloud_sdk
+ 
+     if credentials.client_id == _cloud_sdk.CLOUD_SDK_CLIENT_ID:
+         warnings.warn(_CLOUD_SDK_CREDENTIALS_WARNING)
+@@ -87,20 +87,20 @@
+             Google client library. Use 'scopes' for user-defined scopes.
+         quota_project_id (Optional[str]):  The project ID used for
+             quota and billing.
+-        request (Optional[google.auth.transport.Request]): An object used to make
++        request (Optional[artifact_registry._vendor.google.auth.transport.Request]): An object used to make
+             HTTP requests. This is used to determine the associated project ID
+             for a workload identity pool resource (external account credentials).
+             If not specified, then it will use a
+-            google.auth.transport.requests.Request client to make requests.
++            artifact_registry._vendor.google.auth.transport.requests.Request client to make requests.
+ 
+     Returns:
+-        Tuple[google.auth.credentials.Credentials, Optional[str]]: Loaded
++        Tuple[artifact_registry._vendor.google.auth.credentials.Credentials, Optional[str]]: Loaded
+             credentials and the project ID. Authorized user credentials do not
+             have the project ID information. External account credentials project
+             IDs may not always be determined.
+ 
+     Raises:
+-        google.auth.exceptions.DefaultCredentialsError: if the file is in the
++        artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError: if the file is in the
+             wrong format or is missing.
+     """
+     if not os.path.exists(filename):
+@@ -122,7 +122,7 @@
+     credential_type = info.get("type")
+ 
+     if credential_type == _AUTHORIZED_USER_TYPE:
+-        from google.oauth2 import credentials
++        from artifact_registry._vendor.google.oauth2 import credentials
+ 
+         try:
+             credentials = credentials.Credentials.from_authorized_user_info(
+@@ -139,7 +139,7 @@
+         return credentials, None
+ 
+     elif credential_type == _SERVICE_ACCOUNT_TYPE:
+-        from google.oauth2 import service_account
++        from artifact_registry._vendor.google.oauth2 import service_account
+ 
+         try:
+             credentials = service_account.Credentials.from_service_account_info(
+@@ -176,7 +176,7 @@
+ 
+ def _get_gcloud_sdk_credentials():
+     """Gets the credentials and project ID from the Cloud SDK."""
+-    from google.auth import _cloud_sdk
++    from artifact_registry._vendor.google.auth import _cloud_sdk
+ 
+     _LOGGER.debug("Checking Cloud SDK credentials as part of auth process...")
+ 
+@@ -198,7 +198,7 @@
+ def _get_explicit_environ_credentials():
+     """Gets credentials from the GOOGLE_APPLICATION_CREDENTIALS environment
+     variable."""
+-    from google.auth import _cloud_sdk
++    from artifact_registry._vendor.google.auth import _cloud_sdk
+ 
+     cloud_sdk_adc_path = _cloud_sdk.get_application_default_credentials_path()
+     explicit_file = os.environ.get(environment_vars.CREDENTIALS)
+@@ -234,7 +234,7 @@
+     # some cases where it's not available, so we tolerate ImportError.
+     try:
+         _LOGGER.debug("Checking for App Engine runtime as part of auth process...")
+-        import google.auth.app_engine as app_engine
++        import artifact_registry._vendor.google.auth.app_engine as app_engine
+     except ImportError:
+         _LOGGER.warning("Import of App Engine auth library failed.")
+         return None, None
+@@ -260,14 +260,14 @@
+     # While this library is normally bundled with compute_engine, there are
+     # some cases where it's not available, so we tolerate ImportError.
+     try:
+-        from google.auth import compute_engine
+-        from google.auth.compute_engine import _metadata
++        from artifact_registry._vendor.google.auth import compute_engine
++        from artifact_registry._vendor.google.auth.compute_engine import _metadata
+     except ImportError:
+         _LOGGER.warning("Import of Compute Engine auth library failed.")
+         return None, None
+ 
+     if request is None:
+-        request = google.auth.transport._http_client.Request()
++        request = artifact_registry._vendor.google.auth.transport._http_client.Request()
+ 
+     if _metadata.ping(request=request):
+         # Get the project ID.
+@@ -300,25 +300,25 @@
+             necessary.
+         default_scopes (Optional[Sequence[str]]): Default scopes passed by a
+             Google client library. Use 'scopes' for user-defined scopes.
+-        request (Optional[google.auth.transport.Request]): An object used to make
++        request (Optional[artifact_registry._vendor.google.auth.transport.Request]): An object used to make
+             HTTP requests. This is used to determine the associated project ID
+             for a workload identity pool resource (external account credentials).
+             If not specified, then it will use a
+-            google.auth.transport.requests.Request client to make requests.
++            artifact_registry._vendor.google.auth.transport.requests.Request client to make requests.
+ 
+     Returns:
+-        Tuple[google.auth.credentials.Credentials, Optional[str]]: Loaded
++        Tuple[artifact_registry._vendor.google.auth.credentials.Credentials, Optional[str]]: Loaded
+             credentials and the project ID. External account credentials project
+             IDs may not always be determined.
+ 
+     Raises:
+-        google.auth.exceptions.DefaultCredentialsError: if the info dictionary
++        artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError: if the info dictionary
+             is in the wrong format or is missing required information.
+     """
+     # There are currently 2 types of external_account credentials.
+     try:
+         # Check if configuration corresponds to an AWS credentials.
+-        from google.auth import aws
++        from artifact_registry._vendor.google.auth import aws
+ 
+         credentials = aws.Credentials.from_info(
+             info, scopes=scopes, default_scopes=default_scopes
+@@ -326,7 +326,7 @@
+     except ValueError:
+         try:
+             # Check if configuration corresponds to an Identity Pool credentials.
+-            from google.auth import identity_pool
++            from artifact_registry._vendor.google.auth import identity_pool
+ 
+             credentials = identity_pool.Credentials.from_info(
+                 info, scopes=scopes, default_scopes=default_scopes
+@@ -338,7 +338,7 @@
+                 "Failed to load external account credentials from {}".format(filename)
+             )
+     if request is None:
+-        request = google.auth.transport.requests.Request()
++        request = artifact_registry._vendor.google.auth.transport.requests.Request()
+ 
+     return credentials, credentials.get_project_id(request=request)
+ 
+@@ -385,7 +385,7 @@
+        environment`_ (second generation) then the credentials and project ID
+        are obtained from the `Metadata Service`_.
+     5. If no credentials are found,
+-       :class:`~google.auth.exceptions.DefaultCredentialsError` will be raised.
++       :class:`~artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError` will be raised.
+ 
+     .. _Application Default Credentials: https://developers.google.com\
+             /identity/protocols/application-default-credentials
+@@ -402,38 +402,38 @@
+ 
+     Example::
+ 
+-        import google.auth
++        import artifact_registry._vendor.google.auth
+ 
+-        credentials, project_id = google.auth.default()
++        credentials, project_id = artifact_registry._vendor.google.auth.default()
+ 
+     Args:
+         scopes (Sequence[str]): The list of scopes for the credentials. If
+             specified, the credentials will automatically be scoped if
+             necessary.
+-        request (Optional[google.auth.transport.Request]): An object used to make
++        request (Optional[artifact_registry._vendor.google.auth.transport.Request]): An object used to make
+             HTTP requests. This is used to either detect whether the application
+             is running on Compute Engine or to determine the associated project
+             ID for a workload identity pool resource (external account
+             credentials). If not specified, then it will either use the standard
+             library http client to make requests for Compute Engine credentials
+-            or a google.auth.transport.requests.Request client for external
++            or a artifact_registry._vendor.google.auth.transport.requests.Request client for external
+             account credentials.
+         quota_project_id (Optional[str]): The project ID used for
+             quota and billing.
+         default_scopes (Optional[Sequence[str]]): Default scopes passed by a
+             Google client library. Use 'scopes' for user-defined scopes.
+     Returns:
+-        Tuple[~google.auth.credentials.Credentials, Optional[str]]:
++        Tuple[~artifact_registry._vendor.google.auth.credentials.Credentials, Optional[str]]:
+             the current environment's credentials and project ID. Project ID
+             may be None, which indicates that the Project ID could not be
+             ascertained from the environment.
+ 
+     Raises:
+-        ~google.auth.exceptions.DefaultCredentialsError:
++        ~artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError:
+             If no credentials were found, or if the credentials found were
+             invalid.
+     """
+-    from google.auth.credentials import with_scopes_if_required
++    from artifact_registry._vendor.google.auth.credentials import with_scopes_if_required
+ 
+     explicit_project_id = os.environ.get(
+         environment_vars.PROJECT, os.environ.get(environment_vars.LEGACY_PROJECT)
+@@ -464,7 +464,7 @@
+                 getattr(credentials, "get_project_id", None)
+             ):
+                 if request is None:
+-                    request = google.auth.transport.requests.Request()
++                    request = artifact_registry._vendor.google.auth.transport.requests.Request()
+                 project_id = credentials.get_project_id(request=request)
+ 
+             if quota_project_id:
+diff -urN _vendor/google-orig/auth/environment_vars.py _vendor/google/auth/environment_vars.py
+--- _vendor/google-orig/auth/environment_vars.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/environment_vars.py	2021-05-07 20:38:11.529291723 +0000
+@@ -12,13 +12,13 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-"""Environment variables used by :mod:`google.auth`."""
++"""Environment variables used by :mod:`artifact_registry._vendor.google.auth`."""
+ 
+ 
+ PROJECT = "GOOGLE_CLOUD_PROJECT"
+ """Environment variable defining default project.
+ 
+-This used by :func:`google.auth.default` to explicitly set a project ID. This
++This used by :func:`artifact_registry._vendor.google.auth.default` to explicitly set a project ID. This
+ environment variable is also used by the Google Cloud Python Library.
+ """
+ 
+diff -urN _vendor/google-orig/auth/exceptions.py _vendor/google/auth/exceptions.py
+--- _vendor/google-orig/auth/exceptions.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/exceptions.py	2021-05-07 20:38:11.531291873 +0000
+@@ -12,11 +12,11 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
+-"""Exceptions used in the google.auth package."""
++"""Exceptions used in the artifact_registry._vendor.google.auth package."""
+ 
+ 
+ class GoogleAuthError(Exception):
+-    """Base class for all google.auth errors."""
++    """Base class for all artifact_registry._vendor.google.auth errors."""
+ 
+ 
+ class TransportError(GoogleAuthError):
+diff -urN _vendor/google-orig/auth/external_account.py _vendor/google/auth/external_account.py
+--- _vendor/google-orig/auth/external_account.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/external_account.py	2021-05-07 20:38:11.533292024 +0000
+@@ -33,12 +33,12 @@
+ 
+ import six
+ 
+-from google.auth import _helpers
+-from google.auth import credentials
+-from google.auth import exceptions
+-from google.auth import impersonated_credentials
+-from google.oauth2 import sts
+-from google.oauth2 import utils
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import credentials
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import impersonated_credentials
++from artifact_registry._vendor.google.oauth2 import sts
++from artifact_registry._vendor.google.oauth2 import utils
+ 
+ # The token exchange grant_type used for exchanging credentials.
+ _STS_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:token-exchange"
+@@ -88,7 +88,7 @@
+             default_scopes (Optional[Sequence[str]]): Default scopes passed by a
+                 Google client library. Use 'scopes' for user-defined scopes.
+         Raises:
+-            google.auth.exceptions.RefreshError: If the generateAccessToken
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If the generateAccessToken
+                 endpoint returned an error.
+         """
+         super(Credentials, self).__init__()
+@@ -160,7 +160,7 @@
+         """Retrieves the subject token using the credential_source object.
+ 
+         Args:
+-            request (google.auth.transport.Request): A callable used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+                 HTTP requests.
+         Returns:
+             str: The retrieved subject token.
+@@ -176,14 +176,14 @@
+ 
+         This is introduced to support the current pattern of using the Auth library:
+ 
+-            credentials, project_id = google.auth.default()
++            credentials, project_id = artifact_registry._vendor.google.auth.default()
+ 
+         The resource may not have permission (resourcemanager.projects.get) to
+         call this API or the required scopes may not be selected:
+         https://cloud.google.com/resource-manager/reference/rest/v1/projects/get#authorization-scopes
+ 
+         Args:
+-            request (google.auth.transport.Request): A callable used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+                 HTTP requests.
+         Returns:
+             Optional[str]: The project ID corresponding to the workload identity pool
+@@ -264,7 +264,7 @@
+                 object.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If the generateAccessToken
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If the generateAccessToken
+                 endpoint returned an error.
+         """
+         # Return copy of instance with no service account impersonation.
+diff -urN _vendor/google-orig/auth/iam.py _vendor/google/auth/iam.py
+--- _vendor/google-orig/auth/iam.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/iam.py	2021-05-07 20:38:11.534292099 +0000
+@@ -24,9 +24,9 @@
+ 
+ from six.moves import http_client
+ 
+-from google.auth import _helpers
+-from google.auth import crypt
+-from google.auth import exceptions
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import crypt
++from artifact_registry._vendor.google.auth import exceptions
+ 
+ _IAM_API_ROOT_URI = "https://iamcredentials.googleapis.com/v1"
+ _SIGN_BLOB_URI = _IAM_API_ROOT_URI + "/projects/-/serviceAccounts/{}:signBlob?alt=json"
+@@ -46,9 +46,9 @@
+     def __init__(self, request, credentials, service_account_email):
+         """
+         Args:
+-            request (google.auth.transport.Request): The object used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+                 HTTP requests.
+-            credentials (google.auth.credentials.Credentials): The credentials
++            credentials (artifact_registry._vendor.google.auth.credentials.Credentials): The credentials
+                 that will be used to authenticate the request to the IAM API.
+                 The credentials must have of one the following scopes:
+ 
+diff -urN _vendor/google-orig/auth/identity_pool.py _vendor/google/auth/identity_pool.py
+--- _vendor/google-orig/auth/identity_pool.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/identity_pool.py	2021-05-07 20:38:11.536292250 +0000
+@@ -42,9 +42,9 @@
+ import json
+ import os
+ 
+-from google.auth import _helpers
+-from google.auth import exceptions
+-from google.auth import external_account
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import external_account
+ 
+ 
+ class Credentials(external_account.Credentials):
+@@ -101,7 +101,7 @@
+                 Google client library. Use 'scopes' for user-defined scopes.
+ 
+         Raises:
+-            google.auth.exceptions.RefreshError: If an error is encountered during
++            artifact_registry._vendor.google.auth.exceptions.RefreshError: If an error is encountered during
+                 access token retrieval logic.
+             ValueError: For invalid parameters.
+ 
+@@ -242,7 +242,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.identity_pool.Credentials: The constructed
++            artifact_registry._vendor.google.auth.identity_pool.Credentials: The constructed
+                 credentials.
+ 
+         Raises:
+@@ -271,7 +271,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.identity_pool.Credentials: The constructed
++            artifact_registry._vendor.google.auth.identity_pool.Credentials: The constructed
+                 credentials.
+         """
+         with io.open(filename, "r", encoding="utf-8") as json_file:
+diff -urN _vendor/google-orig/auth/impersonated_credentials.py _vendor/google/auth/impersonated_credentials.py
+--- _vendor/google-orig/auth/impersonated_credentials.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/impersonated_credentials.py	2021-05-07 20:38:11.538292400 +0000
+@@ -33,11 +33,11 @@
+ import six
+ from six.moves import http_client
+ 
+-from google.auth import _helpers
+-from google.auth import credentials
+-from google.auth import exceptions
+-from google.auth import jwt
+-from google.auth.transport.requests import AuthorizedSession
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import credentials
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import jwt
++from artifact_registry._vendor.google.auth.transport.requests import AuthorizedSession
+ 
+ _DEFAULT_TOKEN_LIFETIME_SECS = 3600  # 1 hour in seconds
+ 
+@@ -80,9 +80,9 @@
+             impersonation with regional endpoints.
+ 
+     Raises:
+-        google.auth.exceptions.TransportError: Raised if there is an underlying
++        artifact_registry._vendor.google.auth.exceptions.TransportError: Raised if there is an underlying
+             HTTP connection error
+-        google.auth.exceptions.RefreshError: Raised if the impersonated
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: Raised if the impersonated
+             credentials are not available.  Common reasons are
+             `iamcredentials.googleapis.com` is not enabled or the
+             `Service Account Token Creator` is not assigned
+@@ -153,7 +153,7 @@
+     Initialize a source credential which does not have access to
+     list bucket::
+ 
+-        from google.oauth2 import service_account
++        from artifact_registry._vendor.google.oauth2 import service_account
+ 
+         target_scopes = [
+             'https://www.googleapis.com/auth/devstorage.read_only']
+@@ -166,7 +166,7 @@
+     Now use the source credentials to acquire credentials to impersonate
+     another service account::
+ 
+-        from google.auth import impersonated_credentials
++        from artifact_registry._vendor.google.auth import impersonated_credentials
+ 
+         target_credentials = impersonated_credentials.Credentials(
+           source_credentials=source_credentials,
+@@ -194,7 +194,7 @@
+     ):
+         """
+         Args:
+-            source_credentials (google.auth.Credentials): The source credential
++            source_credentials (artifact_registry._vendor.google.auth.Credentials): The source credential
+                 used as to acquire the impersonated credentials.
+             target_principal (str): The service account to impersonate.
+             target_scopes (Sequence[str]): Scopes to request during the
+@@ -246,7 +246,7 @@
+         the impersonated account.
+ 
+         Args:
+-            request (google.auth.transport.requests.Request): Request object
++            request (artifact_registry._vendor.google.auth.transport.requests.Request): Request object
+                 to use for refreshing credentials.
+         """
+ 
+@@ -331,7 +331,7 @@
+     ):
+         """
+         Args:
+-            target_credentials (google.auth.Credentials): The target
++            target_credentials (artifact_registry._vendor.google.auth.Credentials): The target
+                 credential used as to acquire the id tokens for.
+             target_audience (string): Audience to issue the token for.
+             include_email (bool): Include email in IdToken
+diff -urN _vendor/google-orig/auth/__init__.py _vendor/google/auth/__init__.py
+--- _vendor/google-orig/auth/__init__.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/__init__.py	2021-05-07 20:38:11.491288864 +0000
+@@ -16,8 +16,8 @@
+ 
+ import logging
+ 
+-from google.auth import version as google_auth_version
+-from google.auth._default import default, load_credentials_from_file
++from artifact_registry._vendor.google.auth import version as google_auth_version
++from artifact_registry._vendor.google.auth._default import default, load_credentials_from_file
+ 
+ 
+ __version__ = google_auth_version.__version__
+diff -urN _vendor/google-orig/auth/_jwt_async.py _vendor/google/auth/_jwt_async.py
+--- _vendor/google-orig/auth/_jwt_async.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/_jwt_async.py	2021-05-07 20:38:11.502289691 +0000
+@@ -21,8 +21,8 @@
+ 
+ To encode a JWT use :func:`encode`::
+ 
+-    from google.auth import crypt
+-    from google.auth import jwt_async
++    from artifact_registry._vendor.google.auth import crypt
++    from artifact_registry._vendor.google.auth import jwt_async
+ 
+     signer = crypt.Signer(private_key)
+     payload = {'some': 'payload'}
+@@ -43,15 +43,15 @@
+ change in minor releases.
+ """
+ 
+-import google.auth
+-from google.auth import jwt
++import artifact_registry._vendor.google.auth
++from artifact_registry._vendor.google.auth import jwt
+ 
+ 
+ def encode(signer, payload, header=None, key_id=None):
+     """Make a signed JWT.
+ 
+     Args:
+-        signer (google.auth.crypt.Signer): The signer used to sign the JWT.
++        signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign the JWT.
+         payload (Mapping[str, str]): The JWT payload.
+         header (Mapping[str, str]): Additional JWT header payload.
+         key_id (str): The key id to add to the JWT header. If the
+@@ -92,8 +92,8 @@
+ 
+ class Credentials(
+     jwt.Credentials,
+-    google.auth._credentials_async.Signing,
+-    google.auth._credentials_async.Credentials,
++    artifact_registry._vendor.google.auth._credentials_async.Signing,
++    artifact_registry._vendor.google.auth._credentials_async.Credentials,
+ ):
+     """Credentials that use a JWT as the bearer token.
+ 
+@@ -128,7 +128,7 @@
+             additional_claims={'meta': 'data'})
+ 
+     You can also construct the credentials directly if you have a
+-    :class:`~google.auth.crypt.Signer` instance::
++    :class:`~artifact_registry._vendor.google.auth.crypt.Signer` instance::
+ 
+         credentials = jwt_async.Credentials(
+             signer,
+@@ -147,8 +147,8 @@
+ 
+ class OnDemandCredentials(
+     jwt.OnDemandCredentials,
+-    google.auth._credentials_async.Signing,
+-    google.auth._credentials_async.Credentials,
++    artifact_registry._vendor.google.auth._credentials_async.Signing,
++    artifact_registry._vendor.google.auth._credentials_async.Credentials,
+ ):
+     """On-demand JWT credentials.
+ 
+diff -urN _vendor/google-orig/auth/jwt.py _vendor/google/auth/jwt.py
+--- _vendor/google-orig/auth/jwt.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/jwt.py	2021-05-07 20:51:19.092573238 +0000
+@@ -21,8 +21,8 @@
+ 
+ To encode a JWT use :func:`encode`::
+ 
+-    from google.auth import crypt
+-    from google.auth import jwt
++    from artifact_registry._vendor.google.auth import crypt
++    from artifact_registry._vendor.google.auth import jwt
+ 
+     signer = crypt.Signer(private_key)
+     payload = {'some': 'payload'}
+@@ -49,18 +49,18 @@
+ import datetime
+ import json
+ 
+-import cachetools
++from artifact_registry._vendor import cachetools
+ import six
+ from six.moves import urllib
+ 
+-from google.auth import _helpers
+-from google.auth import _service_account_info
+-from google.auth import crypt
+-from google.auth import exceptions
+-import google.auth.credentials
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import _service_account_info
++from artifact_registry._vendor.google.auth import crypt
++from artifact_registry._vendor.google.auth import exceptions
++import artifact_registry._vendor.google.auth.credentials
+ 
+ try:
+-    from google.auth.crypt import es256
++    from artifact_registry._vendor.google.auth.crypt import es256
+ except ImportError:  # pragma: NO COVER
+     es256 = None
+ 
+@@ -77,7 +77,7 @@
+     """Make a signed JWT.
+ 
+     Args:
+-        signer (google.auth.crypt.Signer): The signer used to sign the JWT.
++        signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign the JWT.
+         payload (Mapping[str, str]): The JWT payload.
+         header (Mapping[str, str]): Additional JWT header payload.
+         key_id (str): The key id to add to the JWT header. If the
+@@ -293,7 +293,7 @@
+ 
+ 
+ class Credentials(
+-    google.auth.credentials.Signing, google.auth.credentials.CredentialsWithQuotaProject
++    artifact_registry._vendor.google.auth.credentials.Signing, artifact_registry._vendor.google.auth.credentials.CredentialsWithQuotaProject
+ ):
+     """Credentials that use a JWT as the bearer token.
+ 
+@@ -328,7 +328,7 @@
+             additional_claims={'meta': 'data'})
+ 
+     You can also construct the credentials directly if you have a
+-    :class:`~google.auth.crypt.Signer` instance::
++    :class:`~artifact_registry._vendor.google.auth.crypt.Signer` instance::
+ 
+         credentials = jwt.Credentials(
+             signer,
+@@ -356,7 +356,7 @@
+     ):
+         """
+         Args:
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+             issuer (str): The `iss` claim.
+             subject (str): The `sub` claim.
+             audience (str): the `aud` claim. The intended audience for the
+@@ -387,12 +387,12 @@
+         info.
+ 
+         Args:
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+             info (Mapping[str, str]): The service account info.
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.Credentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.jwt.Credentials: The constructed credentials.
+ 
+         Raises:
+             ValueError: If the info is not in the expected format.
+@@ -411,7 +411,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.Credentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.jwt.Credentials: The constructed credentials.
+ 
+         Raises:
+             ValueError: If the info is not in the expected format.
+@@ -429,7 +429,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.Credentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.jwt.Credentials: The constructed credentials.
+         """
+         info, signer = _service_account_info.from_filename(
+             filename, require=["client_email"]
+@@ -438,8 +438,8 @@
+ 
+     @classmethod
+     def from_signing_credentials(cls, credentials, audience, **kwargs):
+-        """Creates a new :class:`google.auth.jwt.Credentials` instance from an
+-        existing :class:`google.auth.credentials.Signing` instance.
++        """Creates a new :class:`artifact_registry._vendor.google.auth.jwt.Credentials` instance from an
++        existing :class:`artifact_registry._vendor.google.auth.credentials.Signing` instance.
+ 
+         The new instance will use the same signer as the existing instance and
+         will use the existing instance's signer email as the issuer and
+@@ -455,14 +455,14 @@
+                 svc_creds, audience=audience)
+ 
+         Args:
+-            credentials (google.auth.credentials.Signing): The credentials to
++            credentials (artifact_registry._vendor.google.auth.credentials.Signing): The credentials to
+                 use to construct the new credentials.
+             audience (str): the `aud` claim. The intended audience for the
+                 credentials.
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.Credentials: A new Credentials instance.
++            artifact_registry._vendor.google.auth.jwt.Credentials: A new Credentials instance.
+         """
+         kwargs.setdefault("issuer", credentials.signer_email)
+         kwargs.setdefault("subject", credentials.signer_email)
+@@ -485,7 +485,7 @@
+                 additional claims.
+ 
+         Returns:
+-            google.auth.jwt.Credentials: A new credentials instance.
++            artifact_registry._vendor.google.auth.jwt.Credentials: A new credentials instance.
+         """
+         new_additional_claims = copy.deepcopy(self._additional_claims)
+         new_additional_claims.update(additional_claims or {})
+@@ -499,7 +499,7 @@
+             quota_project_id=self._quota_project_id,
+         )
+ 
+-    @_helpers.copy_docstring(google.auth.credentials.CredentialsWithQuotaProject)
++    @_helpers.copy_docstring(artifact_registry._vendor.google.auth.credentials.CredentialsWithQuotaProject)
+     def with_quota_project(self, quota_project_id):
+         return self.__class__(
+             self._signer,
+@@ -544,23 +544,23 @@
+         # (pylint doesn't correctly recognize overridden methods.)
+         self.token, self.expiry = self._make_jwt()
+ 
+-    @_helpers.copy_docstring(google.auth.credentials.Signing)
++    @_helpers.copy_docstring(artifact_registry._vendor.google.auth.credentials.Signing)
+     def sign_bytes(self, message):
+         return self._signer.sign(message)
+ 
+     @property
+-    @_helpers.copy_docstring(google.auth.credentials.Signing)
++    @_helpers.copy_docstring(artifact_registry._vendor.google.auth.credentials.Signing)
+     def signer_email(self):
+         return self._issuer
+ 
+     @property
+-    @_helpers.copy_docstring(google.auth.credentials.Signing)
++    @_helpers.copy_docstring(artifact_registry._vendor.google.auth.credentials.Signing)
+     def signer(self):
+         return self._signer
+ 
+ 
+ class OnDemandCredentials(
+-    google.auth.credentials.Signing, google.auth.credentials.CredentialsWithQuotaProject
++    artifact_registry._vendor.google.auth.credentials.Signing, artifact_registry._vendor.google.auth.credentials.CredentialsWithQuotaProject
+ ):
+     """On-demand JWT credentials.
+ 
+@@ -591,7 +591,7 @@
+     ):
+         """
+         Args:
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+             issuer (str): The `iss` claim.
+             subject (str): The `sub` claim.
+             additional_claims (Mapping[str, str]): Any additional claims for
+@@ -623,12 +623,12 @@
+         account info.
+ 
+         Args:
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+             info (Mapping[str, str]): The service account info.
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.OnDemandCredentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.jwt.OnDemandCredentials: The constructed credentials.
+ 
+         Raises:
+             ValueError: If the info is not in the expected format.
+@@ -647,7 +647,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.OnDemandCredentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.jwt.OnDemandCredentials: The constructed credentials.
+ 
+         Raises:
+             ValueError: If the info is not in the expected format.
+@@ -665,7 +665,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.OnDemandCredentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.jwt.OnDemandCredentials: The constructed credentials.
+         """
+         info, signer = _service_account_info.from_filename(
+             filename, require=["client_email"]
+@@ -674,8 +674,8 @@
+ 
+     @classmethod
+     def from_signing_credentials(cls, credentials, **kwargs):
+-        """Creates a new :class:`google.auth.jwt.OnDemandCredentials` instance
+-        from an existing :class:`google.auth.credentials.Signing` instance.
++        """Creates a new :class:`artifact_registry._vendor.google.auth.jwt.OnDemandCredentials` instance
++        from an existing :class:`artifact_registry._vendor.google.auth.credentials.Signing` instance.
+ 
+         The new instance will use the same signer as the existing instance and
+         will use the existing instance's signer email as the issuer and
+@@ -689,12 +689,12 @@
+                 svc_creds)
+ 
+         Args:
+-            credentials (google.auth.credentials.Signing): The credentials to
++            credentials (artifact_registry._vendor.google.auth.credentials.Signing): The credentials to
+                 use to construct the new credentials.
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.Credentials: A new Credentials instance.
++            artifact_registry._vendor.google.auth.jwt.Credentials: A new Credentials instance.
+         """
+         kwargs.setdefault("issuer", credentials.signer_email)
+         kwargs.setdefault("subject", credentials.signer_email)
+@@ -713,7 +713,7 @@
+                 additional claims.
+ 
+         Returns:
+-            google.auth.jwt.OnDemandCredentials: A new credentials instance.
++            artifact_registry._vendor.google.auth.jwt.OnDemandCredentials: A new credentials instance.
+         """
+         new_additional_claims = copy.deepcopy(self._additional_claims)
+         new_additional_claims.update(additional_claims or {})
+@@ -727,7 +727,7 @@
+             quota_project_id=self._quota_project_id,
+         )
+ 
+-    @_helpers.copy_docstring(google.auth.credentials.CredentialsWithQuotaProject)
++    @_helpers.copy_docstring(artifact_registry._vendor.google.auth.credentials.CredentialsWithQuotaProject)
+     def with_quota_project(self, quota_project_id):
+ 
+         return self.__class__(
+@@ -804,7 +804,7 @@
+             request (Any): Unused.
+ 
+         Raises:
+-            google.auth.RefreshError
++            artifact_registry._vendor.google.auth.RefreshError
+         """
+         # pylint: disable=unused-argument
+         # (pylint doesn't correctly recognize overridden methods.)
+@@ -833,16 +833,16 @@
+         token = self._get_jwt_for_audience(audience)
+         self.apply(headers, token=token)
+ 
+-    @_helpers.copy_docstring(google.auth.credentials.Signing)
++    @_helpers.copy_docstring(artifact_registry._vendor.google.auth.credentials.Signing)
+     def sign_bytes(self, message):
+         return self._signer.sign(message)
+ 
+     @property
+-    @_helpers.copy_docstring(google.auth.credentials.Signing)
++    @_helpers.copy_docstring(artifact_registry._vendor.google.auth.credentials.Signing)
+     def signer_email(self):
+         return self._issuer
+ 
+     @property
+-    @_helpers.copy_docstring(google.auth.credentials.Signing)
++    @_helpers.copy_docstring(artifact_registry._vendor.google.auth.credentials.Signing)
+     def signer(self):
+         return self._signer
+diff -urN _vendor/google-orig/auth/_oauth2client.py _vendor/google/auth/_oauth2client.py
+--- _vendor/google-orig/auth/_oauth2client.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/_oauth2client.py	2021-05-07 20:38:11.504289842 +0000
+@@ -23,11 +23,11 @@
+ 
+ import six
+ 
+-from google.auth import _helpers
+-import google.auth.app_engine
+-import google.auth.compute_engine
+-import google.oauth2.credentials
+-import google.oauth2.service_account
++from artifact_registry._vendor.google.auth import _helpers
++import artifact_registry._vendor.google.auth.app_engine
++import artifact_registry._vendor.google.auth.compute_engine
++import artifact_registry._vendor.google.oauth2.credentials
++import artifact_registry._vendor.google.oauth2.service_account
+ 
+ try:
+     import oauth2client.client
+@@ -48,7 +48,7 @@
+ 
+ 
+ def _convert_oauth2_credentials(credentials):
+-    """Converts to :class:`google.oauth2.credentials.Credentials`.
++    """Converts to :class:`artifact_registry._vendor.google.oauth2.credentials.Credentials`.
+ 
+     Args:
+         credentials (Union[oauth2client.client.OAuth2Credentials,
+@@ -56,9 +56,9 @@
+             convert.
+ 
+     Returns:
+-        google.oauth2.credentials.Credentials: The converted credentials.
++        artifact_registry._vendor.google.oauth2.credentials.Credentials: The converted credentials.
+     """
+-    new_credentials = google.oauth2.credentials.Credentials(
++    new_credentials = artifact_registry._vendor.google.oauth2.credentials.Credentials(
+         token=credentials.access_token,
+         refresh_token=credentials.refresh_token,
+         token_uri=credentials.token_uri,
+@@ -73,7 +73,7 @@
+ 
+ 
+ def _convert_service_account_credentials(credentials):
+-    """Converts to :class:`google.oauth2.service_account.Credentials`.
++    """Converts to :class:`artifact_registry._vendor.google.oauth2.service_account.Credentials`.
+ 
+     Args:
+         credentials (Union[
+@@ -82,40 +82,40 @@
+             credentials to convert.
+ 
+     Returns:
+-        google.oauth2.service_account.Credentials: The converted credentials.
++        artifact_registry._vendor.google.oauth2.service_account.Credentials: The converted credentials.
+     """
+     info = credentials.serialization_data.copy()
+     info["token_uri"] = credentials.token_uri
+-    return google.oauth2.service_account.Credentials.from_service_account_info(info)
++    return artifact_registry._vendor.google.oauth2.service_account.Credentials.from_service_account_info(info)
+ 
+ 
+ def _convert_gce_app_assertion_credentials(credentials):
+-    """Converts to :class:`google.auth.compute_engine.Credentials`.
++    """Converts to :class:`artifact_registry._vendor.google.auth.compute_engine.Credentials`.
+ 
+     Args:
+         credentials (oauth2client.contrib.gce.AppAssertionCredentials): The
+             credentials to convert.
+ 
+     Returns:
+-        google.oauth2.service_account.Credentials: The converted credentials.
++        artifact_registry._vendor.google.oauth2.service_account.Credentials: The converted credentials.
+     """
+-    return google.auth.compute_engine.Credentials(
++    return artifact_registry._vendor.google.auth.compute_engine.Credentials(
+         service_account_email=credentials.service_account_email
+     )
+ 
+ 
+ def _convert_appengine_app_assertion_credentials(credentials):
+-    """Converts to :class:`google.auth.app_engine.Credentials`.
++    """Converts to :class:`artifact_registry._vendor.google.auth.app_engine.Credentials`.
+ 
+     Args:
+         credentials (oauth2client.contrib.app_engine.AppAssertionCredentials):
+             The credentials to convert.
+ 
+     Returns:
+-        google.oauth2.service_account.Credentials: The converted credentials.
++        artifact_registry._vendor.google.oauth2.service_account.Credentials: The converted credentials.
+     """
+     # pylint: disable=invalid-name
+-    return google.auth.app_engine.Credentials(
++    return artifact_registry._vendor.google.auth.app_engine.Credentials(
+         scopes=_helpers.string_to_scopes(credentials.scope),
+         service_account_id=credentials.service_account_id,
+     )
+@@ -141,20 +141,20 @@
+     This class converts:
+ 
+     - :class:`oauth2client.client.OAuth2Credentials` to
+-      :class:`google.oauth2.credentials.Credentials`.
++      :class:`artifact_registry._vendor.google.oauth2.credentials.Credentials`.
+     - :class:`oauth2client.client.GoogleCredentials` to
+-      :class:`google.oauth2.credentials.Credentials`.
++      :class:`artifact_registry._vendor.google.oauth2.credentials.Credentials`.
+     - :class:`oauth2client.service_account.ServiceAccountCredentials` to
+-      :class:`google.oauth2.service_account.Credentials`.
++      :class:`artifact_registry._vendor.google.oauth2.service_account.Credentials`.
+     - :class:`oauth2client.service_account._JWTAccessCredentials` to
+-      :class:`google.oauth2.service_account.Credentials`.
++      :class:`artifact_registry._vendor.google.oauth2.service_account.Credentials`.
+     - :class:`oauth2client.contrib.gce.AppAssertionCredentials` to
+-      :class:`google.auth.compute_engine.Credentials`.
++      :class:`artifact_registry._vendor.google.auth.compute_engine.Credentials`.
+     - :class:`oauth2client.contrib.appengine.AppAssertionCredentials` to
+-      :class:`google.auth.app_engine.Credentials`.
++      :class:`artifact_registry._vendor.google.auth.app_engine.Credentials`.
+ 
+     Returns:
+-        google.auth.credentials.Credentials: The converted credentials.
++        artifact_registry._vendor.google.auth.credentials.Credentials: The converted credentials.
+ 
+     Raises:
+         ValueError: If the credentials could not be converted.
+diff -urN _vendor/google-orig/auth/_service_account_info.py _vendor/google/auth/_service_account_info.py
+--- _vendor/google-orig/auth/_service_account_info.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/_service_account_info.py	2021-05-07 20:38:11.505289917 +0000
+@@ -19,13 +19,13 @@
+ 
+ import six
+ 
+-from google.auth import crypt
++from artifact_registry._vendor.google.auth import crypt
+ 
+ 
+ def from_dict(data, require=None):
+     """Validates a dictionary containing Google service account data.
+ 
+-    Creates and returns a :class:`google.auth.crypt.Signer` instance from the
++    Creates and returns a :class:`artifact_registry._vendor.google.auth.crypt.Signer` instance from the
+     private key specified in the data.
+ 
+     Args:
+@@ -34,7 +34,7 @@
+             info.
+ 
+     Returns:
+-        google.auth.crypt.Signer: A signer created from the private key in the
++        artifact_registry._vendor.google.auth.crypt.Signer: A signer created from the private key in the
+             service account file.
+ 
+     Raises:
+@@ -66,7 +66,7 @@
+             info.
+ 
+     Returns:
+-        Tuple[ Mapping[str, str], google.auth.crypt.Signer ]: The verified
++        Tuple[ Mapping[str, str], artifact_registry._vendor.google.auth.crypt.Signer ]: The verified
+             info and a signer instance.
+     """
+     with io.open(filename, "r", encoding="utf-8") as json_file:
+diff -urN _vendor/google-orig/auth/transport/_aiohttp_requests.py _vendor/google/auth/transport/_aiohttp_requests.py
+--- _vendor/google-orig/auth/transport/_aiohttp_requests.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/transport/_aiohttp_requests.py	2021-05-07 20:38:11.544292852 +0000
+@@ -27,9 +27,9 @@
+ import six
+ import urllib3
+ 
+-from google.auth import exceptions
+-from google.auth import transport
+-from google.auth.transport import requests
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import transport
++from artifact_registry._vendor.google.auth.transport import requests
+ 
+ # Timeout can be re-defined depending on async requirement. Currently made 60s more than
+ # sync timeout.
+@@ -122,11 +122,11 @@
+     to construct or use this class directly.
+ 
+     This class can be useful if you want to manually refresh a
+-    :class:`~google.auth.credentials.Credentials` instance::
++    :class:`~artifact_registry._vendor.google.auth.credentials.Credentials` instance::
+ 
+-        import google.auth.transport.aiohttp_requests
++        import artifact_registry._vendor.google.auth.transport.aiohttp_requests
+ 
+-        request = google.auth.transport.aiohttp_requests.Request()
++        request = artifact_registry._vendor.google.auth.transport.aiohttp_requests.Request()
+ 
+         credentials.refresh(request)
+ 
+@@ -167,10 +167,10 @@
+                 requests :meth:`requests.Session.request` method.
+ 
+         Returns:
+-            google.auth.transport.Response: The HTTP response.
++            artifact_registry._vendor.google.auth.transport.Response: The HTTP response.
+ 
+         Raises:
+-            google.auth.exceptions.TransportError: If any exception occurred.
++            artifact_registry._vendor.google.auth.exceptions.TransportError: If any exception occurred.
+         """
+ 
+         try:
+@@ -195,7 +195,7 @@
+ 
+ class AuthorizedSession(aiohttp.ClientSession):
+     """This is an async implementation of the Authorized Session class. We utilize an
+-    aiohttp transport instance, and the interface mirrors the google.auth.transport.requests
++    aiohttp transport instance, and the interface mirrors the artifact_registry._vendor.google.auth.transport.requests
+     Authorized Session class, except for the change in the transport used in the async use case.
+ 
+     A Requests Session class with credentials.
+@@ -203,7 +203,7 @@
+     This class is used to perform requests to API endpoints that require
+     authorization::
+ 
+-        from google.auth.transport import aiohttp_requests
++        from artifact_registry._vendor.google.auth.transport import aiohttp_requests
+ 
+         async with aiohttp_requests.AuthorizedSession(credentials) as authed_session:
+             response = await authed_session.request(
+@@ -213,7 +213,7 @@
+     credentials' headers to the request and refreshing credentials as needed.
+ 
+     Args:
+-        credentials (google.auth._credentials_async.Credentials):
++        credentials (artifact_registry._vendor.google.auth._credentials_async.Credentials):
+             The credentials to add to the request.
+         refresh_status_codes (Sequence[int]): Which HTTP status codes indicate
+             that credentials should be refreshed and the request should be
+@@ -222,11 +222,11 @@
+             refresh the credentials and retry the request.
+         refresh_timeout (Optional[int]): The timeout value in seconds for
+             credential refresh HTTP requests.
+-        auth_request (google.auth.transport.aiohttp_requests.Request):
++        auth_request (artifact_registry._vendor.google.auth.transport.aiohttp_requests.Request):
+             (Optional) An instance of
+-            :class:`~google.auth.transport.aiohttp_requests.Request` used when
++            :class:`~artifact_registry._vendor.google.auth.transport.aiohttp_requests.Request` used when
+             refreshing credentials. If not passed,
+-            an instance of :class:`~google.auth.transport.aiohttp_requests.Request`
++            an instance of :class:`~artifact_registry._vendor.google.auth.transport.aiohttp_requests.Request`
+             is created.
+     """
+ 
+diff -urN _vendor/google-orig/auth/transport/grpc.py _vendor/google/auth/transport/grpc.py
+--- _vendor/google-orig/auth/transport/grpc.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/transport/grpc.py	2021-05-07 20:38:11.550293304 +0000
+@@ -21,10 +21,10 @@
+ 
+ import six
+ 
+-from google.auth import environment_vars
+-from google.auth import exceptions
+-from google.auth.transport import _mtls_helper
+-from google.oauth2 import service_account
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth.transport import _mtls_helper
++from artifact_registry._vendor.google.oauth2 import service_account
+ 
+ try:
+     import grpc
+@@ -48,9 +48,9 @@
+         http://www.grpc.io/grpc/python/grpc.html#grpc.AuthMetadataPlugin
+ 
+     Args:
+-        credentials (google.auth.credentials.Credentials): The credentials to
++        credentials (artifact_registry._vendor.google.auth.credentials.Credentials): The credentials to
+             add to requests.
+-        request (google.auth.transport.Request): A HTTP transport request
++        request (artifact_registry._vendor.google.auth.transport.Request): A HTTP transport request
+             object used to refresh credentials as needed.
+         default_host (Optional[str]): A host like "pubsub.googleapis.com".
+             This is used when a self-signed JWT is created from service
+@@ -122,19 +122,19 @@
+ 
+     Example::
+ 
+-        import google.auth
+-        import google.auth.transport.grpc
+-        import google.auth.transport.requests
++        import artifact_registry._vendor.google.auth
++        import artifact_registry._vendor.google.auth.transport.grpc
++        import artifact_registry._vendor.google.auth.transport.requests
+         from google.cloud.speech.v1 import cloud_speech_pb2
+ 
+         # Get credentials.
+-        credentials, _ = google.auth.default()
++        credentials, _ = artifact_registry._vendor.google.auth.default()
+ 
+         # Get an HTTP request function to refresh credentials.
+-        request = google.auth.transport.requests.Request()
++        request = artifact_registry._vendor.google.auth.transport.requests.Request()
+ 
+         # Create a channel.
+-        channel = google.auth.transport.grpc.secure_authorized_channel(
++        channel = artifact_registry._vendor.google.auth.transport.grpc.secure_authorized_channel(
+             credentials, regular_endpoint, request,
+             ssl_credentials=grpc.ssl_channel_credentials())
+ 
+@@ -156,7 +156,7 @@
+ 
+         regular_ssl_credentials = grpc.ssl_channel_credentials()
+ 
+-        channel = google.auth.transport.grpc.secure_authorized_channel(
++        channel = artifact_registry._vendor.google.auth.transport.grpc.secure_authorized_channel(
+             credentials, regular_endpoint, request,
+             ssl_credentials=regular_ssl_credentials)
+ 
+@@ -172,7 +172,7 @@
+             raise MyClientCertFailureException()
+ 
+         try:
+-            channel = google.auth.transport.grpc.secure_authorized_channel(
++            channel = artifact_registry._vendor.google.auth.transport.grpc.secure_authorized_channel(
+                 credentials, mtls_endpoint, request,
+                 client_cert_callback=my_client_cert_callback)
+         except MyClientCertFailureException:
+@@ -196,7 +196,7 @@
+             endpoint_to_use = mtls_endpoint
+         else:
+             endpoint_to_use = regular_endpoint
+-        channel = google.auth.transport.grpc.secure_authorized_channel(
++        channel = artifact_registry._vendor.google.auth.transport.grpc.secure_authorized_channel(
+             credentials, endpoint_to_use, request,
+             ssl_credentials=default_ssl_credentials)
+ 
+@@ -210,20 +210,20 @@
+     created channle is regular or mutual TLS. Regular endpoint ignores client
+     certificate and key::
+ 
+-        channel = google.auth.transport.grpc.secure_authorized_channel(
++        channel = artifact_registry._vendor.google.auth.transport.grpc.secure_authorized_channel(
+             credentials, regular_endpoint, request)
+ 
+     The following code uses mtls_endpoint, if the created channle is regular,
+     and API mtls_endpoint is confgured to require client SSL credentials, API
+     calls using this channel will be rejected::
+ 
+-        channel = google.auth.transport.grpc.secure_authorized_channel(
++        channel = artifact_registry._vendor.google.auth.transport.grpc.secure_authorized_channel(
+             credentials, mtls_endpoint, request)
+ 
+     Args:
+-        credentials (google.auth.credentials.Credentials): The credentials to
++        credentials (artifact_registry._vendor.google.auth.credentials.Credentials): The credentials to
+             add to requests.
+-        request (google.auth.transport.Request): A HTTP transport request
++        request (artifact_registry._vendor.google.auth.transport.Request): A HTTP transport request
+             object used to refresh credentials as needed. Even though gRPC
+             is a separate transport, there's no way to refresh the credentials
+             without using a standard http transport.
+@@ -248,7 +248,7 @@
+         grpc.Channel: The created gRPC channel.
+ 
+     Raises:
+-        google.auth.exceptions.MutualTLSChannelError: If mutual TLS channel
++        artifact_registry._vendor.google.auth.exceptions.MutualTLSChannelError: If mutual TLS channel
+             creation failed for any reason.
+     """
+     # Create the metadata plugin for inserting the authorization header.
+@@ -329,7 +329,7 @@
+             grpc.ChannelCredentials: The created grpc channel credentials.
+ 
+         Raises:
+-            google.auth.exceptions.MutualTLSChannelError: If mutual TLS channel
++            artifact_registry._vendor.google.auth.exceptions.MutualTLSChannelError: If mutual TLS channel
+                 creation failed for any reason.
+         """
+         if self._is_mtls:
+diff -urN _vendor/google-orig/auth/transport/_http_client.py _vendor/google/auth/transport/_http_client.py
+--- _vendor/google-orig/auth/transport/_http_client.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/transport/_http_client.py	2021-05-07 20:38:11.546293002 +0000
+@@ -21,8 +21,8 @@
+ from six.moves import http_client
+ from six.moves import urllib
+ 
+-from google.auth import exceptions
+-from google.auth import transport
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import transport
+ 
+ _LOGGER = logging.getLogger(__name__)
+ 
+@@ -76,7 +76,7 @@
+             Response: The HTTP response.
+ 
+         Raises:
+-            google.auth.exceptions.TransportError: If any exception occurred.
++            artifact_registry._vendor.google.auth.exceptions.TransportError: If any exception occurred.
+         """
+         # socket._GLOBAL_DEFAULT_TIMEOUT is the default in http.client.
+         if timeout is None:
+diff -urN _vendor/google-orig/auth/transport/__init__.py _vendor/google/auth/transport/__init__.py
+--- _vendor/google-orig/auth/transport/__init__.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/transport/__init__.py	2021-05-07 20:38:11.542292701 +0000
+@@ -14,13 +14,13 @@
+ 
+ """Transport - HTTP client library support.
+ 
+-:mod:`google.auth` is designed to work with various HTTP client libraries such
++:mod:`artifact_registry._vendor.google.auth` is designed to work with various HTTP client libraries such
+ as urllib3 and requests. In order to work across these libraries with different
+ interfaces some abstraction is needed.
+ 
+ This module provides two interfaces that are implemented by transport adapters
+ to support HTTP libraries. :class:`Request` defines the interface expected by
+-:mod:`google.auth` to make requests. :class:`Response` defines the interface
++:mod:`artifact_registry._vendor.google.auth` to make requests. :class:`Response` defines the interface
+ for the return value of :class:`Request`.
+ """
+ 
+@@ -90,7 +90,7 @@
+             Response: The HTTP response.
+ 
+         Raises:
+-            google.auth.exceptions.TransportError: If any exception occurred.
++            artifact_registry._vendor.google.auth.exceptions.TransportError: If any exception occurred.
+         """
+         # pylint: disable=redundant-returns-doc, missing-raises-doc
+         # (pylint doesn't play well with abstract docstrings.)
+diff -urN _vendor/google-orig/auth/transport/_mtls_helper.py _vendor/google/auth/transport/_mtls_helper.py
+--- _vendor/google-orig/auth/transport/_mtls_helper.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/transport/_mtls_helper.py	2021-05-07 20:38:11.548293153 +0000
+@@ -22,7 +22,7 @@
+ 
+ import six
+ 
+-from google.auth import exceptions
++from artifact_registry._vendor.google.auth import exceptions
+ 
+ CONTEXT_AWARE_METADATA_PATH = "~/.secureConnect/context_aware_metadata.json"
+ _CERT_PROVIDER_COMMAND = "cert_provider_command"
+@@ -75,7 +75,7 @@
+         Dict[str, str]: The metadata.
+ 
+     Raises:
+-        google.auth.exceptions.ClientCertError: If failed to parse metadata as JSON.
++        artifact_registry._vendor.google.auth.exceptions.ClientCertError: If failed to parse metadata as JSON.
+     """
+     try:
+         with open(metadata_path) as f:
+@@ -100,7 +100,7 @@
+             bytes in PEM format and passphrase bytes.
+ 
+     Raises:
+-        google.auth.exceptions.ClientCertError: if problems occurs when running
++        artifact_registry._vendor.google.auth.exceptions.ClientCertError: if problems occurs when running
+             the cert provider command or generating cert, key and passphrase.
+     """
+     try:
+@@ -155,7 +155,7 @@
+             cert bytes and key bytes both in PEM format, and passphrase bytes.
+ 
+     Raises:
+-        google.auth.exceptions.ClientCertError: if problems occurs when getting
++        artifact_registry._vendor.google.auth.exceptions.ClientCertError: if problems occurs when getting
+             the cert, key and passphrase.
+     """
+     metadata_path = _check_dca_metadata_path(CONTEXT_AWARE_METADATA_PATH)
+@@ -197,7 +197,7 @@
+             and key bytes both in PEM format.
+ 
+     Raises:
+-        google.auth.exceptions.ClientCertError: if problems occurs when getting
++        artifact_registry._vendor.google.auth.exceptions.ClientCertError: if problems occurs when getting
+             the cert and key.
+     """
+     if client_cert_callback:
+@@ -218,7 +218,7 @@
+     protected private key and passphrase, you can convert it to a client cert
+     callback function accepted by google-auth::
+ 
+-        from google.auth.transport import _mtls_helper
++        from artifact_registry._vendor.google.auth.transport import _mtls_helper
+ 
+         def your_client_cert_function():
+             return cert, encrypted_key, passphrase
+diff -urN _vendor/google-orig/auth/transport/mtls.py _vendor/google/auth/transport/mtls.py
+--- _vendor/google-orig/auth/transport/mtls.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/transport/mtls.py	2021-05-07 20:38:11.552293454 +0000
+@@ -16,8 +16,8 @@
+ 
+ import six
+ 
+-from google.auth import exceptions
+-from google.auth.transport import _mtls_helper
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth.transport import _mtls_helper
+ 
+ 
+ def has_default_client_cert_source():
+@@ -40,7 +40,7 @@
+             client certificate bytes and private key bytes, both in PEM format.
+ 
+     Raises:
+-        google.auth.exceptions.DefaultClientCertSourceError: If the default
++        artifact_registry._vendor.google.auth.exceptions.DefaultClientCertSourceError: If the default
+             client SSL credentials don't exist or are malformed.
+     """
+     if not has_default_client_cert_source():
+@@ -76,7 +76,7 @@
+             returns the cert_path, key_path and passphrase bytes.
+ 
+     Raises:
+-        google.auth.exceptions.DefaultClientCertSourceError: If any problem
++        artifact_registry._vendor.google.auth.exceptions.DefaultClientCertSourceError: If any problem
+             occurs when loading or saving the client certificate and key.
+     """
+     if not has_default_client_cert_source():
+diff -urN _vendor/google-orig/auth/transport/requests.py _vendor/google/auth/transport/requests.py
+--- _vendor/google-orig/auth/transport/requests.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/transport/requests.py	2021-05-07 20:38:11.554293605 +0000
+@@ -41,11 +41,11 @@
+ )  # pylint: disable=ungrouped-imports
+ import six  # pylint: disable=ungrouped-imports
+ 
+-from google.auth import environment_vars
+-from google.auth import exceptions
+-from google.auth import transport
+-import google.auth.transport._mtls_helper
+-from google.oauth2 import service_account
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import transport
++import artifact_registry._vendor.google.auth.transport._mtls_helper
++from artifact_registry._vendor.google.oauth2 import service_account
+ 
+ _LOGGER = logging.getLogger(__name__)
+ 
+@@ -127,12 +127,12 @@
+     to construct or use this class directly.
+ 
+     This class can be useful if you want to manually refresh a
+-    :class:`~google.auth.credentials.Credentials` instance::
++    :class:`~artifact_registry._vendor.google.auth.credentials.Credentials` instance::
+ 
+-        import google.auth.transport.requests
++        import artifact_registry._vendor.google.auth.transport.requests
+         import requests
+ 
+-        request = google.auth.transport.requests.Request()
++        request = artifact_registry._vendor.google.auth.transport.requests.Request()
+ 
+         credentials.refresh(request)
+ 
+@@ -173,10 +173,10 @@
+                 requests :meth:`~requests.Session.request` method.
+ 
+         Returns:
+-            google.auth.transport.Response: The HTTP response.
++            artifact_registry._vendor.google.auth.transport.Response: The HTTP response.
+ 
+         Raises:
+-            google.auth.exceptions.TransportError: If any exception occurred.
++            artifact_registry._vendor.google.auth.exceptions.TransportError: If any exception occurred.
+         """
+         try:
+             _LOGGER.debug("Making request: %s %s", method, url)
+@@ -241,7 +241,7 @@
+     This class is used to perform requests to API endpoints that require
+     authorization::
+ 
+-        from google.auth.transport.requests import AuthorizedSession
++        from artifact_registry._vendor.google.auth.transport.requests import AuthorizedSession
+ 
+         authed_session = AuthorizedSession(credentials)
+ 
+@@ -302,7 +302,7 @@
+             # handle exceptions.
+ 
+     Args:
+-        credentials (google.auth.credentials.Credentials): The credentials to
++        credentials (artifact_registry._vendor.google.auth.credentials.Credentials): The credentials to
+             add to the request.
+         refresh_status_codes (Sequence[int]): Which HTTP status codes indicate
+             that credentials should be refreshed and the request should be
+@@ -311,11 +311,11 @@
+             refresh the credentials and retry the request.
+         refresh_timeout (Optional[int]): The timeout value in seconds for
+             credential refresh HTTP requests.
+-        auth_request (google.auth.transport.requests.Request):
++        auth_request (artifact_registry._vendor.google.auth.transport.requests.Request):
+             (Optional) An instance of
+-            :class:`~google.auth.transport.requests.Request` used when
++            :class:`~artifact_registry._vendor.google.auth.transport.requests.Request` used when
+             refreshing credentials. If not passed,
+-            an instance of :class:`~google.auth.transport.requests.Request`
++            an instance of :class:`~artifact_registry._vendor.google.auth.transport.requests.Request`
+             is created.
+         default_host (Optional[str]): A host like "pubsub.googleapis.com".
+             This is used when a self-signed JWT is created from service
+@@ -384,7 +384,7 @@
+                 will be used.
+ 
+         Raises:
+-            google.auth.exceptions.MutualTLSChannelError: If mutual TLS channel
++            artifact_registry._vendor.google.auth.exceptions.MutualTLSChannelError: If mutual TLS channel
+                 creation failed for any reason.
+         """
+         use_client_cert = os.getenv(
+@@ -405,7 +405,7 @@
+                 self._is_mtls,
+                 cert,
+                 key,
+-            ) = google.auth.transport._mtls_helper.get_client_cert_and_key(
++            ) = artifact_registry._vendor.google.auth.transport._mtls_helper.get_client_cert_and_key(
+                 client_cert_callback
+             )
+ 
+diff -urN _vendor/google-orig/auth/transport/urllib3.py _vendor/google/auth/transport/urllib3.py
+--- _vendor/google-orig/auth/transport/urllib3.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/auth/transport/urllib3.py	2021-05-07 20:38:11.556293755 +0000
+@@ -46,10 +46,10 @@
+ import six
+ import urllib3.exceptions  # pylint: disable=ungrouped-imports
+ 
+-from google.auth import environment_vars
+-from google.auth import exceptions
+-from google.auth import transport
+-from google.oauth2 import service_account
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import transport
++from artifact_registry._vendor.google.oauth2 import service_account
+ 
+ _LOGGER = logging.getLogger(__name__)
+ 
+@@ -85,13 +85,13 @@
+     to construct or use this class directly.
+ 
+     This class can be useful if you want to manually refresh a
+-    :class:`~google.auth.credentials.Credentials` instance::
++    :class:`~artifact_registry._vendor.google.auth.credentials.Credentials` instance::
+ 
+-        import google.auth.transport.urllib3
++        import artifact_registry._vendor.google.auth.transport.urllib3
+         import urllib3
+ 
+         http = urllib3.PoolManager()
+-        request = google.auth.transport.urllib3.Request(http)
++        request = artifact_registry._vendor.google.auth.transport.urllib3.Request(http)
+ 
+         credentials.refresh(request)
+ 
+@@ -124,10 +124,10 @@
+                 urllib3 :meth:`urlopen` method.
+ 
+         Returns:
+-            google.auth.transport.Response: The HTTP response.
++            artifact_registry._vendor.google.auth.transport.Response: The HTTP response.
+ 
+         Raises:
+-            google.auth.exceptions.TransportError: If any exception occurred.
++            artifact_registry._vendor.google.auth.exceptions.TransportError: If any exception occurred.
+         """
+         # urllib3 uses a sentinel default value for timeout, so only set it if
+         # specified.
+@@ -191,7 +191,7 @@
+     This class is used to perform requests to API endpoints that require
+     authorization::
+ 
+-        from google.auth.transport.urllib3 import AuthorizedHttp
++        from artifact_registry._vendor.google.auth.transport.urllib3 import AuthorizedHttp
+ 
+         authed_http = AuthorizedHttp(credentials)
+ 
+@@ -252,7 +252,7 @@
+             # handle exceptions.
+ 
+     Args:
+-        credentials (google.auth.credentials.Credentials): The credentials to
++        credentials (artifact_registry._vendor.google.auth.credentials.Credentials): The credentials to
+             add to the request.
+         http (urllib3.PoolManager): The underlying HTTP object to
+             use to make requests. If not specified, a
+@@ -325,7 +325,7 @@
+             True if the channel is mutual TLS and False otherwise.
+ 
+         Raises:
+-            google.auth.exceptions.MutualTLSChannelError: If mutual TLS channel
++            artifact_registry._vendor.google.auth.exceptions.MutualTLSChannelError: If mutual TLS channel
+                 creation failed for any reason.
+         """
+         use_client_cert = os.getenv(
+diff -urN _vendor/google-orig/oauth2/challenges.py _vendor/google/oauth2/challenges.py
+--- _vendor/google-orig/oauth2/challenges.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/challenges.py	2021-05-07 20:38:11.571294884 +0000
+@@ -22,8 +22,8 @@
+ 
+ import six
+ 
+-from google.auth import _helpers
+-from google.auth import exceptions
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import exceptions
+ 
+ 
+ REAUTH_ORIGIN = "https://accounts.google.com"
+diff -urN _vendor/google-orig/oauth2/_client_async.py _vendor/google/oauth2/_client_async.py
+--- _vendor/google-orig/oauth2/_client_async.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/_client_async.py	2021-05-07 20:38:11.562294207 +0000
+@@ -30,9 +30,9 @@
+ from six.moves import http_client
+ from six.moves import urllib
+ 
+-from google.auth import exceptions
+-from google.auth import jwt
+-from google.oauth2 import _client as client
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import jwt
++from artifact_registry._vendor.google.oauth2 import _client as client
+ 
+ 
+ async def _token_endpoint_request_no_throw(
+@@ -42,7 +42,7 @@
+     This function doesn't throw on response errors.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -107,7 +107,7 @@
+     """Makes a request to the OAuth 2.0 authorization server's token endpoint.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -120,7 +120,7 @@
+         Mapping[str, str]: The JSON-decoded response data.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+     """
+     response_status_ok, response_data = await _token_endpoint_request_no_throw(
+@@ -137,7 +137,7 @@
+     For more details, see `rfc7523 section 4`_.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -148,7 +148,7 @@
+             expiration, and additional data returned by the token endpoint.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+ 
+     .. _rfc7523 section 4: https://tools.ietf.org/html/rfc7523#section-4
+@@ -177,7 +177,7 @@
+     that require ID Tokens instead of access tokens or JWT bearer tokens.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorization server's token endpoint
+             URI.
+@@ -190,7 +190,7 @@
+             data returned by the endpoint.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+     """
+     body = {"assertion": assertion, "grant_type": client._JWT_GRANT_TYPE}
+@@ -223,7 +223,7 @@
+     For more details, see `rfc678 section 6`_.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -243,7 +243,7 @@
+             returned by the token endpoint.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+ 
+     .. _rfc6748 section 6: https://tools.ietf.org/html/rfc6749#section-6
+diff -urN _vendor/google-orig/oauth2/_client.py _vendor/google/oauth2/_client.py
+--- _vendor/google-orig/oauth2/_client.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/_client.py	2021-05-07 20:38:11.561294132 +0000
+@@ -30,9 +30,9 @@
+ from six.moves import http_client
+ from six.moves import urllib
+ 
+-from google.auth import _helpers
+-from google.auth import exceptions
+-from google.auth import jwt
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import jwt
+ 
+ _URLENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
+ _JSON_CONTENT_TYPE = "application/json"
+@@ -47,7 +47,7 @@
+         response_data (Mapping): The decoded response data.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: The errors contained in response_data.
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: The errors contained in response_data.
+     """
+     try:
+         error_details = "{}: {}".format(
+@@ -85,7 +85,7 @@
+     This function doesn't throw on response errors.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -142,7 +142,7 @@
+     """Makes a request to the OAuth 2.0 authorization server's token endpoint.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -155,7 +155,7 @@
+         Mapping[str, str]: The JSON-decoded response data.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+     """
+     response_status_ok, response_data = _token_endpoint_request_no_throw(
+@@ -172,7 +172,7 @@
+     For more details, see `rfc7523 section 4`_.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -183,7 +183,7 @@
+             expiration, and additional data returned by the token endpoint.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+ 
+     .. _rfc7523 section 4: https://tools.ietf.org/html/rfc7523#section-4
+@@ -212,7 +212,7 @@
+     that require ID Tokens instead of access tokens or JWT bearer tokens.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorization server's token endpoint
+             URI.
+@@ -225,7 +225,7 @@
+             data returned by the endpoint.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+     """
+     body = {"assertion": assertion, "grant_type": _JWT_GRANT_TYPE}
+@@ -258,7 +258,7 @@
+             refresh token will be returned.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+     """
+     try:
+@@ -287,7 +287,7 @@
+     For more details, see `rfc678 section 6`_.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -307,7 +307,7 @@
+             returned by the token endpoint.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+ 
+     .. _rfc6748 section 6: https://tools.ietf.org/html/rfc6749#section-6
+diff -urN _vendor/google-orig/oauth2/_credentials_async.py _vendor/google/oauth2/_credentials_async.py
+--- _vendor/google-orig/oauth2/_credentials_async.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/_credentials_async.py	2021-05-07 20:38:11.564294357 +0000
+@@ -31,11 +31,11 @@
+ .. _rfc6749 section 4.1: https://tools.ietf.org/html/rfc6749#section-4.1
+ """
+ 
+-from google.auth import _credentials_async as credentials
+-from google.auth import _helpers
+-from google.auth import exceptions
+-from google.oauth2 import _reauth_async as reauth
+-from google.oauth2 import credentials as oauth2_credentials
++from artifact_registry._vendor.google.auth import _credentials_async as credentials
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.oauth2 import _reauth_async as reauth
++from artifact_registry._vendor.google.oauth2 import credentials as oauth2_credentials
+ 
+ 
+ class Credentials(oauth2_credentials.Credentials):
+diff -urN _vendor/google-orig/oauth2/credentials.py _vendor/google/oauth2/credentials.py
+--- _vendor/google-orig/oauth2/credentials.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/credentials.py	2021-05-07 20:38:11.573295035 +0000
+@@ -37,11 +37,11 @@
+ 
+ import six
+ 
+-from google.auth import _cloud_sdk
+-from google.auth import _helpers
+-from google.auth import credentials
+-from google.auth import exceptions
+-from google.oauth2 import reauth
++from artifact_registry._vendor.google.auth import _cloud_sdk
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import credentials
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.oauth2 import reauth
+ 
+ 
+ # The Google OAuth 2.0 token endpoint. Used for authorized user credentials.
+@@ -162,7 +162,7 @@
+         Depending on the authorization server and the scopes requested, this
+         may be populated when credentials are obtained and updated when
+         :meth:`refresh` is called. This token is a JWT. It can be verified
+-        and decoded using :func:`google.oauth2.id_token.verify_oauth2_token`.
++        and decoded using :func:`artifact_registry._vendor.google.oauth2.id_token.verify_oauth2_token`.
+         """
+         return self._id_token
+ 
+@@ -264,7 +264,7 @@
+                 credentials.
+ 
+         Returns:
+-            google.oauth2.credentials.Credentials: The constructed
++            artifact_registry._vendor.google.oauth2.credentials.Credentials: The constructed
+                 credentials.
+ 
+         Raises:
+@@ -315,7 +315,7 @@
+                 credentials.
+ 
+         Returns:
+-            google.oauth2.credentials.Credentials: The constructed
++            artifact_registry._vendor.google.oauth2.credentials.Credentials: The constructed
+                 credentials.
+ 
+         Raises:
+@@ -385,7 +385,7 @@
+             account (str): Account to get the access token for.
+ 
+         Returns:
+-            google.oauth2.credentials.UserAccessTokenCredentials: The created
++            artifact_registry._vendor.google.oauth2.credentials.UserAccessTokenCredentials: The created
+                 credentials with the given account.
+         """
+         return self.__class__(account=account, quota_project_id=self._quota_project_id)
+@@ -398,12 +398,12 @@
+         """Refreshes the access token.
+ 
+         Args:
+-            request (google.auth.transport.Request): This argument is required
++            request (artifact_registry._vendor.google.auth.transport.Request): This argument is required
+                 by the base class interface but not used in this implementation,
+                 so just set it to `None`.
+ 
+         Raises:
+-            google.auth.exceptions.UserAccessTokenError: If the access token
++            artifact_registry._vendor.google.auth.exceptions.UserAccessTokenError: If the access token
+                 refresh failed.
+         """
+         self.token = _cloud_sdk.get_auth_access_token(self._account)
+diff -urN _vendor/google-orig/oauth2/_id_token_async.py _vendor/google/oauth2/_id_token_async.py
+--- _vendor/google-orig/oauth2/_id_token_async.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/_id_token_async.py	2021-05-07 20:38:11.566294508 +0000
+@@ -25,8 +25,8 @@
+ 
+ Example::
+ 
+-    from google.oauth2 import _id_token_async
+-    from google.auth.transport import aiohttp_requests
++    from artifact_registry._vendor.google.oauth2 import _id_token_async
++    from artifact_registry._vendor.google.auth.transport import aiohttp_requests
+ 
+     request = aiohttp_requests.Request()
+ 
+@@ -43,15 +43,15 @@
+ day), you may wish to take advantage of caching to reduce latency and the
+ potential for network errors. This can be accomplished using an external
+ library like `CacheControl`_ to create a cache-aware
+-:class:`google.auth.transport.Request`::
++:class:`artifact_registry._vendor.google.auth.transport.Request`::
+ 
+     import cachecontrol
+-    import google.auth.transport.requests
++    import artifact_registry._vendor.google.auth.transport.requests
+     import requests
+ 
+     session = requests.session()
+     cached_session = cachecontrol.CacheControl(session)
+-    request = google.auth.transport.requests.Request(session=cached_session)
++    request = artifact_registry._vendor.google.auth.transport.requests.Request(session=cached_session)
+ 
+ .. _OpenID Connect ID Token:
+     http://openid.net/specs/openid-connect-core-1_0.html#IDToken
+@@ -64,11 +64,11 @@
+ import six
+ from six.moves import http_client
+ 
+-from google.auth import environment_vars
+-from google.auth import exceptions
+-from google.auth import jwt
+-from google.auth.transport import requests
+-from google.oauth2 import id_token as sync_id_token
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import jwt
++from artifact_registry._vendor.google.auth.transport import requests
++from artifact_registry._vendor.google.oauth2 import id_token as sync_id_token
+ 
+ 
+ async def _fetch_certs(request, certs_url):
+@@ -78,7 +78,7 @@
+     ``{'key id': 'x509 certificate'}``.
+ 
+     Args:
+-        request (google.auth.transport.Request): The object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+             HTTP requests. This must be an aiohttp request.
+         certs_url (str): The certificate endpoint URL.
+ 
+@@ -105,7 +105,7 @@
+ 
+     Args:
+         id_token (Union[str, bytes]): The encoded token.
+-        request (google.auth.transport.Request): The object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+             HTTP requests. This must be an aiohttp request.
+         audience (str): The audience that this token is intended for. If None
+             then the audience is not verified.
+@@ -126,7 +126,7 @@
+ 
+     Args:
+         id_token (Union[str, bytes]): The encoded token.
+-        request (google.auth.transport.Request): The object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+             HTTP requests. This must be an aiohttp request.
+         audience (str): The audience that this token is intended for. This is
+             typically your application's OAuth 2.0 client ID. If None then the
+@@ -160,7 +160,7 @@
+ 
+     Args:
+         id_token (Union[str, bytes]): The encoded token.
+-        request (google.auth.transport.Request): The object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+             HTTP requests. This must be an aiohttp request.
+         audience (str): The audience that this token is intended for. This is
+             typically your Firebase application ID. If None then the audience
+@@ -188,21 +188,21 @@
+        to the path of a valid service account JSON file, then ID token is
+        acquired using this service account credentials.
+     3. If metadata server doesn't exist and no valid service account credentials
+-       are found, :class:`~google.auth.exceptions.DefaultCredentialsError` will
++       are found, :class:`~artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError` will
+        be raised.
+ 
+     Example::
+ 
+-        import google.oauth2._id_token_async
+-        import google.auth.transport.aiohttp_requests
++        import artifact_registry._vendor.google.oauth2._id_token_async
++        import artifact_registry._vendor.google.auth.transport.aiohttp_requests
+ 
+-        request = google.auth.transport.aiohttp_requests.Request()
++        request = artifact_registry._vendor.google.auth.transport.aiohttp_requests.Request()
+         target_audience = "https://pubsub.googleapis.com"
+ 
+-        id_token = await google.oauth2._id_token_async.fetch_id_token(request, target_audience)
++        id_token = await artifact_registry._vendor.google.oauth2._id_token_async.fetch_id_token(request, target_audience)
+ 
+     Args:
+-        request (google.auth.transport.aiohttp_requests.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.aiohttp_requests.Request): A callable used to make
+             HTTP requests.
+         audience (str): The audience that this ID token is intended for.
+ 
+@@ -210,14 +210,14 @@
+         str: The ID token.
+ 
+     Raises:
+-        ~google.auth.exceptions.DefaultCredentialsError:
++        ~artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError:
+             If metadata server doesn't exist and no valid service account
+             credentials are found.
+     """
+     # 1. First try to fetch ID token from metadata server if it exists. The code
+     # works for GAE and Cloud Run metadata server as well.
+     try:
+-        from google.auth import compute_engine
++        from artifact_registry._vendor.google.auth import compute_engine
+ 
+         request_new = requests.Request()
+         credentials = compute_engine.IDTokenCredentials(
+@@ -251,7 +251,7 @@
+                 (info.get("type") == "service_account") and info or None
+             )
+ 
+-            from google.oauth2 import _service_account_async as service_account
++            from artifact_registry._vendor.google.oauth2 import _service_account_async as service_account
+ 
+             credentials = service_account.IDTokenCredentials.from_service_account_info(
+                 credentials_content, target_audience=audience
+diff -urN _vendor/google-orig/oauth2/id_token.py _vendor/google/oauth2/id_token.py
+--- _vendor/google-orig/oauth2/id_token.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/id_token.py	2021-05-07 20:38:11.575295185 +0000
+@@ -25,8 +25,8 @@
+ 
+ Example::
+ 
+-    from google.oauth2 import id_token
+-    from google.auth.transport import requests
++    from artifact_registry._vendor.google.oauth2 import id_token
++    from artifact_registry._vendor.google.auth.transport import requests
+ 
+     request = requests.Request()
+ 
+@@ -40,15 +40,15 @@
+ day), you may wish to take advantage of caching to reduce latency and the
+ potential for network errors. This can be accomplished using an external
+ library like `CacheControl`_ to create a cache-aware
+-:class:`google.auth.transport.Request`::
++:class:`artifact_registry._vendor.google.auth.transport.Request`::
+ 
+     import cachecontrol
+-    import google.auth.transport.requests
++    import artifact_registry._vendor.google.auth.transport.requests
+     import requests
+ 
+     session = requests.session()
+     cached_session = cachecontrol.CacheControl(session)
+-    request = google.auth.transport.requests.Request(session=cached_session)
++    request = artifact_registry._vendor.google.auth.transport.requests.Request(session=cached_session)
+ 
+ .. _OpenID Connect ID Tokens:
+     http://openid.net/specs/openid-connect-core-1_0.html#IDToken
+@@ -61,9 +61,9 @@
+ import six
+ from six.moves import http_client
+ 
+-from google.auth import environment_vars
+-from google.auth import exceptions
+-from google.auth import jwt
++from artifact_registry._vendor.google.auth import environment_vars
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.auth import jwt
+ 
+ 
+ # The URL that provides public certificates for verifying ID tokens issued
+@@ -87,7 +87,7 @@
+     ``{'key id': 'x509 certificate'}``.
+ 
+     Args:
+-        request (google.auth.transport.Request): The object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+             HTTP requests.
+         certs_url (str): The certificate endpoint URL.
+ 
+@@ -110,7 +110,7 @@
+ 
+     Args:
+         id_token (Union[str, bytes]): The encoded token.
+-        request (google.auth.transport.Request): The object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+             HTTP requests.
+         audience (str or list): The audience or audiences that this token is
+             intended for. If None then the audience is not verified.
+@@ -131,7 +131,7 @@
+ 
+     Args:
+         id_token (Union[str, bytes]): The encoded token.
+-        request (google.auth.transport.Request): The object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+             HTTP requests.
+         audience (str): The audience that this token is intended for. This is
+             typically your application's OAuth 2.0 client ID. If None then the
+@@ -162,7 +162,7 @@
+ 
+     Args:
+         id_token (Union[str, bytes]): The encoded token.
+-        request (google.auth.transport.Request): The object used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): The object used to make
+             HTTP requests.
+         audience (str): The audience that this token is intended for. This is
+             typically your Firebase application ID. If None then the audience
+@@ -187,21 +187,21 @@
+        to the path of a valid service account JSON file, then ID token is
+        acquired using this service account credentials.
+     3. If metadata server doesn't exist and no valid service account credentials
+-       are found, :class:`~google.auth.exceptions.DefaultCredentialsError` will
++       are found, :class:`~artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError` will
+        be raised.
+ 
+     Example::
+ 
+-        import google.oauth2.id_token
+-        import google.auth.transport.requests
++        import artifact_registry._vendor.google.oauth2.id_token
++        import artifact_registry._vendor.google.auth.transport.requests
+ 
+-        request = google.auth.transport.requests.Request()
++        request = artifact_registry._vendor.google.auth.transport.requests.Request()
+         target_audience = "https://pubsub.googleapis.com"
+ 
+-        id_token = google.oauth2.id_token.fetch_id_token(request, target_audience)
++        id_token = artifact_registry._vendor.google.oauth2.id_token.fetch_id_token(request, target_audience)
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         audience (str): The audience that this ID token is intended for.
+ 
+@@ -209,14 +209,14 @@
+         str: The ID token.
+ 
+     Raises:
+-        ~google.auth.exceptions.DefaultCredentialsError:
++        ~artifact_registry._vendor.google.auth.exceptions.DefaultCredentialsError:
+             If metadata server doesn't exist and no valid service account
+             credentials are found.
+     """
+     # 1. First try to fetch ID token from metada server if it exists. The code
+     # works for GAE and Cloud Run metadata server as well.
+     try:
+-        from google.auth import compute_engine
++        from artifact_registry._vendor.google.auth import compute_engine
+ 
+         credentials = compute_engine.IDTokenCredentials(
+             request, audience, use_metadata_identity_endpoint=True
+@@ -247,7 +247,7 @@
+                 (info.get("type") == "service_account") and info or None
+             )
+ 
+-            from google.oauth2 import service_account
++            from artifact_registry._vendor.google.oauth2 import service_account
+ 
+             credentials = service_account.IDTokenCredentials.from_service_account_info(
+                 credentials_content, target_audience=audience
+diff -urN _vendor/google-orig/oauth2/_reauth_async.py _vendor/google/oauth2/_reauth_async.py
+--- _vendor/google-orig/oauth2/_reauth_async.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/_reauth_async.py	2021-05-07 20:38:11.568294659 +0000
+@@ -36,11 +36,11 @@
+ 
+ from six.moves import range
+ 
+-from google.auth import exceptions
+-from google.oauth2 import _client
+-from google.oauth2 import _client_async
+-from google.oauth2 import challenges
+-from google.oauth2 import reauth
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.oauth2 import _client
++from artifact_registry._vendor.google.oauth2 import _client_async
++from artifact_registry._vendor.google.oauth2 import challenges
++from artifact_registry._vendor.google.oauth2 import reauth
+ 
+ 
+ async def _get_challenges(
+@@ -49,7 +49,7 @@
+     """Does initial request to reauth API to get the challenges.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests. This must be an aiohttp request.
+         supported_challenge_types (Sequence[str]): list of challenge names
+             supported by the manager.
+@@ -78,7 +78,7 @@
+     """Attempt to refresh access token by sending next challenge result.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests. This must be an aiohttp request.
+         session_id (str): session id returned by the initial reauth call.
+         challenge_id (str): challenge id returned by the initial reauth call.
+@@ -113,7 +113,7 @@
+             https://reauth.googleapis.com/v2/sessions:start or from sending the
+             previous challenge response to
+             https://reauth.googleapis.com/v2/sessions/id:continue)
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests. This must be an aiohttp request.
+         access_token (str): reauth access token
+ 
+@@ -121,7 +121,7 @@
+         dict: The response from the reauth API.
+ 
+     Raises:
+-        google.auth.exceptions.ReauthError: if reauth failed.
++        artifact_registry._vendor.google.auth.exceptions.ReauthError: if reauth failed.
+     """
+     for challenge in msg["challenges"]:
+         if challenge["status"] != "READY":
+@@ -158,7 +158,7 @@
+     """Given an http request method and reauth access token, get rapt token.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests. This must be an aiohttp request.
+         access_token (str): reauth access token
+         requested_scopes (Sequence[str]): scopes required by the client application
+@@ -167,7 +167,7 @@
+         str: The rapt token.
+ 
+     Raises:
+-        google.auth.exceptions.ReauthError: if reauth failed
++        artifact_registry._vendor.google.auth.exceptions.ReauthError: if reauth failed
+     """
+     msg = await _get_challenges(
+         request,
+@@ -211,7 +211,7 @@
+     """Given an http request method and refresh_token, get rapt token.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests. This must be an aiohttp request.
+         client_id (str): client id to get access token for reauth scope.
+         client_secret (str): client secret for the client_id
+@@ -222,7 +222,7 @@
+     Returns:
+         str: The rapt token.
+     Raises:
+-        google.auth.exceptions.RefreshError: If reauth failed.
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If reauth failed.
+     """
+     sys.stderr.write("Reauthentication required.\n")
+ 
+@@ -254,7 +254,7 @@
+     """Implements the reauthentication flow.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests. This must be an aiohttp request.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -274,7 +274,7 @@
+             returned by the token endpoint, and the rapt token.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+     """
+     body = {
+diff -urN _vendor/google-orig/oauth2/reauth.py _vendor/google/oauth2/reauth.py
+--- _vendor/google-orig/oauth2/reauth.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/reauth.py	2021-05-07 20:38:11.577295336 +0000
+@@ -36,9 +36,9 @@
+ 
+ from six.moves import range
+ 
+-from google.auth import exceptions
+-from google.oauth2 import _client
+-from google.oauth2 import challenges
++from artifact_registry._vendor.google.auth import exceptions
++from artifact_registry._vendor.google.oauth2 import _client
++from artifact_registry._vendor.google.oauth2 import challenges
+ 
+ 
+ _REAUTH_SCOPE = "https://www.googleapis.com/auth/accounts.reauth"
+@@ -81,7 +81,7 @@
+     """Does initial request to reauth API to get the challenges.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         supported_challenge_types (Sequence[str]): list of challenge names
+             supported by the manager.
+@@ -106,7 +106,7 @@
+     """Attempt to refresh access token by sending next challenge result.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         session_id (str): session id returned by the initial reauth call.
+         challenge_id (str): challenge id returned by the initial reauth call.
+@@ -141,7 +141,7 @@
+             https://reauth.googleapis.com/v2/sessions:start or from sending the
+             previous challenge response to
+             https://reauth.googleapis.com/v2/sessions/id:continue)
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         access_token (str): reauth access token
+ 
+@@ -149,7 +149,7 @@
+         dict: The response from the reauth API.
+ 
+     Raises:
+-        google.auth.exceptions.ReauthError: if reauth failed.
++        artifact_registry._vendor.google.auth.exceptions.ReauthError: if reauth failed.
+     """
+     for challenge in msg["challenges"]:
+         if challenge["status"] != "READY":
+@@ -186,7 +186,7 @@
+     """Given an http request method and reauth access token, get rapt token.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         access_token (str): reauth access token
+         requested_scopes (Sequence[str]): scopes required by the client application
+@@ -195,7 +195,7 @@
+         str: The rapt token.
+ 
+     Raises:
+-        google.auth.exceptions.ReauthError: if reauth failed
++        artifact_registry._vendor.google.auth.exceptions.ReauthError: if reauth failed
+     """
+     msg = _get_challenges(
+         request,
+@@ -238,7 +238,7 @@
+     """Given an http request method and refresh_token, get rapt token.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         client_id (str): client id to get access token for reauth scope.
+         client_secret (str): client secret for the client_id
+@@ -249,7 +249,7 @@
+     Returns:
+         str: The rapt token.
+     Raises:
+-        google.auth.exceptions.RefreshError: If reauth failed.
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If reauth failed.
+     """
+     sys.stderr.write("Reauthentication required.\n")
+ 
+@@ -281,7 +281,7 @@
+     """Implements the reauthentication flow.
+ 
+     Args:
+-        request (google.auth.transport.Request): A callable used to make
++        request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+             HTTP requests.
+         token_uri (str): The OAuth 2.0 authorizations server's token endpoint
+             URI.
+@@ -301,7 +301,7 @@
+             returned by the token endpoint, and the rapt token.
+ 
+     Raises:
+-        google.auth.exceptions.RefreshError: If the token endpoint returned
++        artifact_registry._vendor.google.auth.exceptions.RefreshError: If the token endpoint returned
+             an error.
+     """
+     body = {
+diff -urN _vendor/google-orig/oauth2/_service_account_async.py _vendor/google/oauth2/_service_account_async.py
+--- _vendor/google-orig/oauth2/_service_account_async.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/_service_account_async.py	2021-05-07 20:38:11.570294809 +0000
+@@ -18,14 +18,14 @@
+ classes, and therefore async/await syntax is required when calling this
+ method when using service account credentials with asynchronous functionality.
+ Otherwise, all other methods are inherited from the regular service account
+-credentials file google.oauth2.service_account
++credentials file artifact_registry._vendor.google.oauth2.service_account
+ 
+ """
+ 
+-from google.auth import _credentials_async as credentials_async
+-from google.auth import _helpers
+-from google.oauth2 import _client_async
+-from google.oauth2 import service_account
++from artifact_registry._vendor.google.auth import _credentials_async as credentials_async
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.oauth2 import _client_async
++from artifact_registry._vendor.google.oauth2 import service_account
+ 
+ 
+ class Credentials(
+diff -urN _vendor/google-orig/oauth2/service_account.py _vendor/google/oauth2/service_account.py
+--- _vendor/google-orig/oauth2/service_account.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/service_account.py	2021-05-07 20:38:11.580295562 +0000
+@@ -46,7 +46,7 @@
+ step is required. The use of the private key allows this profile to assert
+ identity directly.
+ 
+-This profile also differs from the :mod:`google.auth.jwt` authentication
++This profile also differs from the :mod:`artifact_registry._vendor.google.auth.jwt` authentication
+ because the JWT credentials use the JWT directly as the bearer token. This
+ profile instead only uses the JWT to obtain an OAuth 2.0 access token. The
+ obtained OAuth 2.0 access token is used as the bearer token.
+@@ -73,11 +73,11 @@
+ import copy
+ import datetime
+ 
+-from google.auth import _helpers
+-from google.auth import _service_account_info
+-from google.auth import credentials
+-from google.auth import jwt
+-from google.oauth2 import _client
++from artifact_registry._vendor.google.auth import _helpers
++from artifact_registry._vendor.google.auth import _service_account_info
++from artifact_registry._vendor.google.auth import credentials
++from artifact_registry._vendor.google.auth import jwt
++from artifact_registry._vendor.google.oauth2 import _client
+ 
+ _DEFAULT_TOKEN_LIFETIME_SECS = 3600  # 1 hour in seconds
+ 
+@@ -134,7 +134,7 @@
+     ):
+         """
+         Args:
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+             service_account_email (str): The service account's email.
+             scopes (Sequence[str]): User-defined scopes to request during the
+                 authorization grant.
+@@ -179,12 +179,12 @@
+         info.
+ 
+         Args:
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+             info (Mapping[str, str]): The service account info.
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.Credentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.jwt.Credentials: The constructed credentials.
+ 
+         Raises:
+             ValueError: If the info is not in the expected format.
+@@ -207,7 +207,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.service_account.Credentials: The constructed
++            artifact_registry._vendor.google.auth.service_account.Credentials: The constructed
+                 credentials.
+ 
+         Raises:
+@@ -227,7 +227,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.service_account.Credentials: The constructed
++            artifact_registry._vendor.google.auth.service_account.Credentials: The constructed
+                 credentials.
+         """
+         info, signer = _service_account_info.from_filename(
+@@ -275,7 +275,7 @@
+             subject (str): The subject claim.
+ 
+         Returns:
+-            google.auth.service_account.Credentials: A new credentials
++            artifact_registry._vendor.google.auth.service_account.Credentials: A new credentials
+                 instance.
+         """
+         return self.__class__(
+@@ -299,7 +299,7 @@
+                 additional claims.
+ 
+         Returns:
+-            google.auth.service_account.Credentials: A new credentials
++            artifact_registry._vendor.google.auth.service_account.Credentials: A new credentials
+                 instance.
+         """
+         new_additional_claims = copy.deepcopy(self._additional_claims)
+@@ -463,7 +463,7 @@
+     ):
+         """
+         Args:
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+             service_account_email (str): The service account's email.
+             token_uri (str): The OAuth 2.0 Token URI.
+             target_audience (str): The intended audience for these credentials,
+@@ -495,12 +495,12 @@
+         info.
+ 
+         Args:
+-            signer (google.auth.crypt.Signer): The signer used to sign JWTs.
++            signer (artifact_registry._vendor.google.auth.crypt.Signer): The signer used to sign JWTs.
+             info (Mapping[str, str]): The service account info.
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.jwt.IDTokenCredentials: The constructed credentials.
++            artifact_registry._vendor.google.auth.jwt.IDTokenCredentials: The constructed credentials.
+ 
+         Raises:
+             ValueError: If the info is not in the expected format.
+@@ -519,7 +519,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.service_account.IDTokenCredentials: The constructed
++            artifact_registry._vendor.google.auth.service_account.IDTokenCredentials: The constructed
+                 credentials.
+ 
+         Raises:
+@@ -539,7 +539,7 @@
+             kwargs: Additional arguments to pass to the constructor.
+ 
+         Returns:
+-            google.auth.service_account.IDTokenCredentials: The constructed
++            artifact_registry._vendor.google.auth.service_account.IDTokenCredentials: The constructed
+                 credentials.
+         """
+         info, signer = _service_account_info.from_filename(
+@@ -556,7 +556,7 @@
+             used when requesting the ID Token.
+ 
+         Returns:
+-            google.auth.service_account.IDTokenCredentials: A new credentials
++            artifact_registry._vendor.google.auth.service_account.IDTokenCredentials: A new credentials
+                 instance.
+         """
+         return self.__class__(
+diff -urN _vendor/google-orig/oauth2/sts.py _vendor/google/oauth2/sts.py
+--- _vendor/google-orig/oauth2/sts.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/sts.py	2021-05-07 20:38:11.581295637 +0000
+@@ -36,7 +36,7 @@
+ from six.moves import http_client
+ from six.moves import urllib
+ 
+-from google.oauth2 import utils
++from artifact_registry._vendor.google.oauth2 import utils
+ 
+ 
+ _URLENCODED_HEADERS = {"Content-Type": "application/x-www-form-urlencoded"}
+@@ -52,7 +52,7 @@
+ 
+         Args:
+             token_exchange_endpoint (str): The token exchange endpoint.
+-            client_authentication (Optional(google.oauth2.oauth2_utils.ClientAuthentication)):
++            client_authentication (Optional(artifact_registry._vendor.google.oauth2.oauth2_utils.ClientAuthentication)):
+                 The optional OAuth client authentication credentials if available.
+         """
+         super(Client, self).__init__(client_authentication)
+@@ -77,7 +77,7 @@
+         rfc8693 spec.
+ 
+         Args:
+-            request (google.auth.transport.Request): A callable used to make
++            request (artifact_registry._vendor.google.auth.transport.Request): A callable used to make
+                 HTTP requests.
+             grant_type (str): The OAuth 2.0 token exchange grant type.
+             subject_token (str): The OAuth 2.0 token exchange subject token.
+@@ -99,7 +99,7 @@
+                 the requested token and its expiration time.
+ 
+         Raises:
+-            google.auth.exceptions.OAuthError: If the token endpoint returned
++            artifact_registry._vendor.google.auth.exceptions.OAuthError: If the token endpoint returned
+                 an error.
+         """
+         # Initialize request headers.
+diff -urN _vendor/google-orig/oauth2/utils.py _vendor/google/oauth2/utils.py
+--- _vendor/google-orig/oauth2/utils.py	2021-04-26 20:36:43.000000000 +0000
++++ _vendor/google/oauth2/utils.py	2021-05-07 20:38:11.583295788 +0000
+@@ -23,7 +23,7 @@
+ This will define interfaces for handling OAuth related error responses as
+ stated in `RFC 6749 section 5.2`_.
+ This will include a common function to convert these HTTP error responses to a
+-:class:`google.auth.exceptions.OAuthError` exception.
++:class:`artifact_registry._vendor.google.auth.exceptions.OAuthError` exception.
+ 
+ 
+ Client authentication for OAuth flows
+@@ -47,7 +47,7 @@
+ 
+ import six
+ 
+-from google.auth import exceptions
++from artifact_registry._vendor.google.auth import exceptions
+ 
+ 
+ # OAuth client authentication based on
+@@ -67,7 +67,7 @@
+         and secret credentials for basic and response-body auth.
+ 
+         Args:
+-            client_auth_type (google.oauth2.oauth_utils.ClientAuthType): The
++            client_auth_type (artifact_registry._vendor.google.oauth2.oauth_utils.ClientAuthType): The
+                 client authentication type.
+             client_id (str): The client ID.
+             client_secret (Optional[str]): The client secret.
+@@ -87,7 +87,7 @@
+         """Instantiates an OAuth client authentication handler.
+ 
+         Args:
+-            client_authentication (Optional[google.oauth2.utils.ClientAuthentication]):
++            client_authentication (Optional[artifact_registry._vendor.google.oauth2.utils.ClientAuthentication]):
+                 The OAuth client authentication credentials if available.
+         """
+         super(OAuthClientAuthHandler, self).__init__()
+@@ -152,7 +152,7 @@
+         response_body (str): The decoded response data.
+ 
+     Raises:
+-        google.auth.exceptions.OAuthError
++        artifact_registry._vendor.google.auth.exceptions.OAuthError
+     """
+     try:
+         error_components = []
