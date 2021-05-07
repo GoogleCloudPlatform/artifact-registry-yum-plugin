@@ -12,11 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import google.auth
-import google.auth.transport.requests
-from google.auth import compute_engine
-from google.auth.exceptions import DefaultCredentialsError, RefreshError
-from google.oauth2 import service_account
+from artifact_registry._vendor.google.auth import compute_engine, default
+from artifact_registry._vendor.google.auth.exceptions import DefaultCredentialsError, RefreshError
+from artifact_registry._vendor.google.auth.transport import requests
+from artifact_registry._vendor.google.oauth2 import service_account
 
 from yum.plugins import TYPE_CORE
 
@@ -46,10 +45,11 @@ def _get_creds(conduit):
     return compute_engine.Credentials(service_account_email)
 
   try:
-    creds, _ = google.auth.default()
-    return creds
+    creds, _ = default()
   except DefaultCredentialsError:
     return None
+
+  return creds
 
 
 def _add_headers(credentials, repo):
@@ -64,7 +64,7 @@ def _get_token(credentials):
     return None
   if not credentials.valid:
     try:
-      credentials.refresh(google.auth.transport.requests.Request())
+      credentials.refresh(requests.Request())
     except RefreshError:
       return None
   return credentials.token
