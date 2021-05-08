@@ -20,9 +20,10 @@ Summary: Yum plugin for Artifact Registry
 License: ASL 2.0
 Url: https://cloud.google.com/artifact-registry
 Source0: %{name}_%{version}.orig.tar.gz
+Source1: google-auth-1.21.2.tar.gz
+Patch0: google-auth-el7-imports.patch
 
 Requires: yum >= 3.0
-Requires: python2-google-auth >= 1.1.1
 Requires: python2-requests >= 2.0
 Requires: python2-pyasn1
 Requires: python2-pyasn1-modules
@@ -36,23 +37,21 @@ BuildArch: noarch
 Contains a Yum plugin for authenticated access to Artifact Registry repositories.
 
 %prep
-%autosetup
+%setup
+%setup -T -D -a 1
+mkdir _vendor
+touch _vendor/__init__.py
+mv google-auth-1.21.2/google _vendor/
+rm -rf google-auth-1.21.2
+%patch0
 
 %install
 install -d %{buildroot}/usr/lib/yum-plugins
 install -p -m 0644 yum/artifact-registry.py %{buildroot}/usr/lib/yum-plugins/
 install -d %{buildroot}/etc/yum/pluginconf.d
 install -p -m 0644 artifact-registry.conf %{buildroot}/etc/yum/pluginconf.d/
-# Setup vendored google-auth package, legacy version with python2.7 support.
-install -d %{buildroot}/usr/lib/python2.7/site-packages/artifact_registry/_vendor
-touch %{buildroot}/usr/lib/python2.7/site-packages/artifact_registry/_vendor/__init__.py
-cp -av vendor/google-auth-1.21.2/google %{buildroot}/usr/lib/python2.7/site-packages/artifact_registry/_vendor
-find  %{buildroot}/usr/lib/python2.7/site-packages/artifact_registry/_vendor/ \
-  -type f -iname '*.py' -exec sed -i "" \
-  -e 's/google\.auth/artifact_registry._vendor.google.auth/g' '{}' \;
-find  %{buildroot}/usr/lib/python2.7/site-packages/artifact_registry/_vendor/ \
-  -type f -iname '*.py' -exec sed -i "" \
-  -e 's/google\.oauth2/artifact_registry._vendor.google.oauth2/g' '{}' \;
+install -d %{buildroot}%{python_sitelib}/artifact_registry/
+mv _vendor %{buildroot}%{python_sitelib}/artifact_registry/
 
 
 %files
