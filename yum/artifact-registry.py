@@ -24,7 +24,7 @@ plugin_type = (TYPE_CORE,)
 
 
 def prereposetup_hook(conduit):
-  credentials = _get_creds()
+  credentials = _get_creds(conduit)
   if not credentials:
     return
   for repo in conduit.getRepos().listEnabled():
@@ -56,7 +56,7 @@ def _add_headers(credentials, repo):
   token = _get_token(credentials)
   if token:
     repo.http_headers.update(
-        {'Authorization': 'Bearer %s' % credentials.token})
+        {'Authorization': 'Bearer %s' % str(credentials.token)})
 
 
 def _get_token(credentials):
