@@ -28,7 +28,11 @@ Patch1: cachetools-imports.patch
 Patch2: rsa-imports.patch
 
 Requires: dnf >= 1.0.0
-Requires: python3-google-auth >= 1.1.1
+Requires: python3-requests >= 2.0
+Requires: python3-pyasn1
+Requires: python3-pyasn1-modules
+Requires: python3-six
+
 BuildArch: noarch
 
 %description
