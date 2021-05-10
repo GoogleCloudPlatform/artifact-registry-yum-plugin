@@ -44,12 +44,12 @@ Contains a dnf plugin for authenticated access to Artifact Registry repositories
 %setup -T -D -a 2
 %setup -T -D -a 3
 mkdir _vendor
-touch _vendor/__init__.py
 mv google-auth-1.30.0/google _vendor/
 rm -rf google-auth-1.30.0
 mv cachetools-4.2.2/src/cachetools _vendor/
 rm -rf cachetools-4.2.2
 mv rsa-4.7.2/rsa _vendor/
+rm _vendor/rsa/__init__.py
 rm -rf rsa-4.7.2
 %patch0
 %patch1

@@ -87,20 +87,6 @@ diff -urN _vendor/rsa-orig/cli.py _vendor/rsa/cli.py
  
          signature_file = cli_args[1]
  
-diff -urN _vendor/rsa-orig/__init__.py _vendor/rsa/__init__.py
---- _vendor/rsa-orig/__init__.py	2021-02-24 10:43:02.000000000 +0000
-+++ _vendor/rsa/__init__.py	2021-05-07 20:43:58.263391117 +0000
-@@ -21,8 +21,8 @@
- 
- """
- 
--from rsa.key import newkeys, PrivateKey, PublicKey
--from rsa.pkcs1 import encrypt, decrypt, sign, verify, DecryptionError, \
-+from artifact_registry._vendor.rsa.key import newkeys, PrivateKey, PublicKey
-+from artifact_registry._vendor.rsa.pkcs1 import encrypt, decrypt, sign, verify, DecryptionError, \
-     VerificationError, find_signature_hash,  sign_hash, compute_hash
- 
- __author__ = "Sybren Stuvel, Barry Mead and Yesudeep Mangalapilly"
 diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
 --- _vendor/rsa-orig/key.py	2021-02-24 10:40:11.000000000 +0000
 +++ _vendor/rsa/key.py	2021-05-07 20:45:01.063118180 +0000
