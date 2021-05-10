@@ -40,7 +40,6 @@ Contains a Yum plugin for authenticated access to Artifact Registry repositories
 %setup
 %setup -T -D -a 1
 mkdir _vendor
-touch _vendor/__init__.py
 mv google-auth-1.21.2/google _vendor/
 rm -rf google-auth-1.21.2
 %patch0
