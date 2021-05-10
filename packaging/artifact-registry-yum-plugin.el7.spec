@@ -57,7 +57,6 @@ mv _vendor %{buildroot}%{python_sitelib}/artifact_registry/
 %files
 %defattr(755,root,root,-)
 /usr/lib/yum-plugins/artifact-registry.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/*.py*
 /usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/*.py*
 /usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/auth/*.py*
 /usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/auth/compute_engine/*.py*

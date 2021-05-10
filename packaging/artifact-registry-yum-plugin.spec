@@ -68,7 +68,6 @@ mv _vendor %{buildroot}%{python_sitelib}/artifact_registry/
 %defattr(-,root,root,-)
 %{python_sitelib}/dnf-plugins/artifact-registry.py
 %{python_sitelib}/dnf-plugins/__pycache__/artifact-registry*.py*
-%{python_sitelib}/artifact_registry/_vendor/*.py*
 %{python_sitelib}/artifact_registry/_vendor/google/*.py*
 %{python_sitelib}/artifact_registry/_vendor/google/auth/*.py*
 %{python_sitelib}/artifact_registry/_vendor/google/auth/compute_engine/*.py*
@@ -85,6 +84,5 @@ mv _vendor %{buildroot}%{python_sitelib}/artifact_registry/
 %{python_sitelib}/artifact_registry/_vendor/cachetools/__pycache__/*.py*
 %{python_sitelib}/artifact_registry/_vendor/rsa/*.py*
 %{python_sitelib}/artifact_registry/_vendor/rsa/__pycache__/*.py*
-%{python_sitelib}/artifact_registry/_vendor/__pycache__/*.py*
 %config /etc/dnf/plugins/artifact-registry.conf
 %doc LICENSE
