@@ -40,7 +40,6 @@ Contains a Yum plugin for authenticated access to Artifact Registry repositories
 %setup
 %setup -T -D -a 1
 mkdir _vendor
-touch _vendor/__init__.py
 mv google-auth-1.21.2/google _vendor/
 rm -rf google-auth-1.21.2
 %patch0
@@ -57,7 +56,6 @@ mv _vendor %{buildroot}%{python_sitelib}/artifact_registry/
 %files
 %defattr(755,root,root,-)
 /usr/lib/yum-plugins/artifact-registry.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/*.py*
 /usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/*.py*
 /usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/auth/*.py*
 /usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/auth/compute_engine/*.py*
