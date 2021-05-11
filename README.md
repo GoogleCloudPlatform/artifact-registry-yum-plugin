@@ -58,17 +58,17 @@ configuration file.
 
 #### Configuration options
 
-The `service\_account\_json` option
+The `service_account_json` option
 
 Since it is impractical to set the
-GOOGLE\_APPLICATION\_CREDENTIALS variable in all
+GOOGLE_APPLICATION_CREDENTIALS variable in all
 contexts where yum or dnf may be invoked, this
 option can be used to provide an absolute path to a
 JSON file containing service account or application
 default credentials. This option takes precedence, if
 both are set, this one will be used.
 
-The `service\_account\_email` option
+The `service_account_email` option
 
 By default on GCE instances the plugin will use the
 "default" service account, typically the compute
