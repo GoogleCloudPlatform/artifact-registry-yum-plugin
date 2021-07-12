@@ -49,7 +49,6 @@ rm -rf google-auth-1.30.0
 mv cachetools-4.2.2/src/cachetools _vendor/
 rm -rf cachetools-4.2.2
 mv rsa-4.7.2/rsa _vendor/
-rm _vendor/rsa/__init__.py
 rm -rf rsa-4.7.2
 %patch0
 %patch1
