@@ -1,6 +1,6 @@
 diff -urN _vendor/rsa-orig/cli.py _vendor/rsa/cli.py
---- _vendor/rsa-orig/cli.py	2021-01-10 10:09:07.000000000 +0000
-+++ _vendor/rsa/cli.py	2021-05-07 20:43:39.569984028 +0000
+--- _vendor/rsa-orig/cli.py	2021-01-10 02:09:07.000000000 -0800
++++ _vendor/rsa/cli.py	2021-07-12 13:54:05.563269430 -0700
 @@ -22,11 +22,11 @@
  import typing
  import optparse
@@ -88,9 +88,9 @@ diff -urN _vendor/rsa-orig/cli.py _vendor/rsa/cli.py
          signature_file = cli_args[1]
  
 diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
---- _vendor/rsa-orig/key.py	2021-02-24 10:40:11.000000000 +0000
-+++ _vendor/rsa/key.py	2021-05-07 20:45:01.063118180 +0000
-@@ -36,11 +36,11 @@
+--- _vendor/rsa-orig/key.py	2021-02-24 02:40:11.000000000 -0800
++++ _vendor/rsa/key.py	2021-07-12 13:55:29.151702573 -0700
+@@ -36,11 +36,12 @@
  import typing
  import warnings
  
@@ -100,6 +100,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
 -import rsa.randnum
 -import rsa.core
 +import artifact_registry._vendor.rsa.prime
++from artifact_registry._vendor.rsa.prime import getprime
 +import artifact_registry._vendor.rsa.pem
 +import artifact_registry._vendor.rsa.common
 +import artifact_registry._vendor.rsa.randnum
@@ -107,7 +108,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
  
  
  log = logging.getLogger(__name__)
-@@ -183,8 +183,8 @@
+@@ -183,8 +184,8 @@
  
      def _initial_blinding_factor(self) -> int:
          for _ in range(1000):
@@ -118,7 +119,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
                  return blind_r
          raise RuntimeError('unable to find blinding factor')
  
-@@ -204,7 +204,7 @@
+@@ -204,7 +205,7 @@
              if self.blindfac < 0:
                  # Compute initial blinding factor, which is rather slow to do.
                  self.blindfac = self._initial_blinding_factor()
@@ -127,7 +128,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
              else:
                  # Reuse previous blinding factor.
                  self.blindfac = pow(self.blindfac, 2, self.n)
-@@ -290,7 +290,7 @@
+@@ -290,7 +291,7 @@
          """
  
          from pyasn1.codec.der import decoder
@@ -136,7 +137,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
  
          (priv, _) = decoder.decode(keyfile, asn1Spec=AsnPubKey())
          return cls(n=int(priv['modulus']), e=int(priv['publicExponent']))
-@@ -303,7 +303,7 @@
+@@ -303,7 +304,7 @@
          """
  
          from pyasn1.codec.der import encoder
@@ -145,7 +146,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
  
          # Create the ASN object
          asn_key = AsnPubKey()
-@@ -324,7 +324,7 @@
+@@ -324,7 +325,7 @@
          :return: a PublicKey object
          """
  
@@ -154,7 +155,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
          return cls._load_pkcs1_der(der)
  
      def _save_pkcs1_pem(self) -> bytes:
-@@ -335,7 +335,7 @@
+@@ -335,7 +336,7 @@
          """
  
          der = self._save_pkcs1_der()
@@ -163,7 +164,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
  
      @classmethod
      def load_pkcs1_openssl_pem(cls, keyfile: bytes) -> 'PublicKey':
-@@ -353,7 +353,7 @@
+@@ -353,7 +354,7 @@
          :return: a PublicKey object
          """
  
@@ -172,7 +173,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
          return cls.load_pkcs1_openssl_der(der)
  
      @classmethod
-@@ -365,7 +365,7 @@
+@@ -365,7 +366,7 @@
          :return: a PublicKey object
          """
  
@@ -181,7 +182,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
          from pyasn1.codec.der import decoder
          from pyasn1.type import univ
  
-@@ -412,7 +412,7 @@
+@@ -412,7 +413,7 @@
          # Calculate exponents and coefficient.
          self.exp1 = int(d % (p - 1))
          self.exp2 = int(d % (q - 1))
@@ -190,7 +191,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
  
      def __getitem__(self, key: str) -> int:
          return getattr(self, key)
-@@ -463,7 +463,7 @@
+@@ -463,7 +464,7 @@
  
          # Blinding and un-blinding should be using the same factor
          blinded, blindfac_inverse = self.blind(encrypted)
@@ -199,7 +200,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
          return self.unblind(decrypted, blindfac_inverse)
  
      def blinded_encrypt(self, message: int) -> int:
-@@ -477,7 +477,7 @@
+@@ -477,7 +478,7 @@
          """
  
          blinded, blindfac_inverse = self.blind(message)
@@ -208,7 +209,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
          return self.unblind(encrypted, blindfac_inverse)
  
      @classmethod
-@@ -588,7 +588,7 @@
+@@ -588,7 +589,7 @@
          :return: a PrivateKey object
          """
  
@@ -217,7 +218,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
          return cls._load_pkcs1_der(der)
  
      def _save_pkcs1_pem(self) -> bytes:
-@@ -599,11 +599,11 @@
+@@ -599,11 +600,11 @@
          """
  
          der = self._save_pkcs1_der()
@@ -227,11 +228,11 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
  
  def find_p_q(nbits: int,
 -             getprime_func: typing.Callable[[int], int] = rsa.prime.getprime,
-+             getprime_func: typing.Callable[[int], int] = artifact_registry._vendor.rsa.prime.getprime,
++             getprime_func: typing.Callable[[int], int] = getprime,
               accurate: bool = True) -> typing.Tuple[int, int]:
      """Returns a tuple of two different primes of nbits bits each.
  
-@@ -663,7 +663,7 @@
+@@ -663,7 +664,7 @@
              return True
  
          # Make sure we have just the right amount of bits
@@ -240,7 +241,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
          return total_bits == found_size
  
      # Keep choosing other primes until they match our requirements.
-@@ -698,9 +698,9 @@
+@@ -698,9 +699,9 @@
      phi_n = (p - 1) * (q - 1)
  
      try:
@@ -253,7 +254,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
              exponent, phi_n, ex.d,
              msg="e (%d) and phi_n (%d) are not relatively prime (divider=%i)" %
                  (exponent, phi_n, ex.d))
-@@ -798,7 +798,7 @@
+@@ -798,7 +799,7 @@
          def getprime_func(nbits: int) -> int:
              return parallel.getprime(nbits, poolsize=poolsize)
      else:
@@ -263,8 +264,8 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
      # Generate the key components
      (p, q, e, d) = gen_keys(nbits, getprime_func, accurate=accurate, exponent=exponent)
 diff -urN _vendor/rsa-orig/parallel.py _vendor/rsa/parallel.py
---- _vendor/rsa-orig/parallel.py	2021-01-10 10:09:07.000000000 +0000
-+++ _vendor/rsa/parallel.py	2021-05-07 20:45:10.014791990 +0000
+--- _vendor/rsa-orig/parallel.py	2021-01-10 02:09:07.000000000 -0800
++++ _vendor/rsa/parallel.py	2021-07-12 13:54:05.567269451 -0700
 @@ -25,16 +25,16 @@
  import multiprocessing as mp
  from multiprocessing.connection import Connection
@@ -287,8 +288,8 @@ diff -urN _vendor/rsa-orig/parallel.py _vendor/rsa/parallel.py
              return
  
 diff -urN _vendor/rsa-orig/pkcs1_v2.py _vendor/rsa/pkcs1_v2.py
---- _vendor/rsa-orig/pkcs1_v2.py	2021-01-10 10:09:07.000000000 +0000
-+++ _vendor/rsa/pkcs1_v2.py	2021-05-07 20:45:43.722329226 +0000
+--- _vendor/rsa-orig/pkcs1_v2.py	2021-01-10 02:09:07.000000000 -0800
++++ _vendor/rsa/pkcs1_v2.py	2021-07-12 13:54:05.567269451 -0700
 @@ -18,7 +18,7 @@
  documentation is RFC 2437: https://tools.ietf.org/html/rfc2437
  """
@@ -299,8 +300,8 @@ diff -urN _vendor/rsa-orig/pkcs1_v2.py _vendor/rsa/pkcs1_v2.py
      pkcs1,
      transform,
 diff -urN _vendor/rsa-orig/prime.py _vendor/rsa/prime.py
---- _vendor/rsa-orig/prime.py	2021-01-10 10:09:07.000000000 +0000
-+++ _vendor/rsa/prime.py	2021-05-07 20:46:04.431888079 +0000
+--- _vendor/rsa-orig/prime.py	2021-01-10 02:09:07.000000000 -0800
++++ _vendor/rsa/prime.py	2021-07-12 13:54:05.567269451 -0700
 @@ -18,8 +18,8 @@
  Roberto Tamassia, 2002.
  """
@@ -340,8 +341,8 @@ diff -urN _vendor/rsa-orig/prime.py _vendor/rsa/prime.py
          # Test for primeness
          if is_prime(integer):
 diff -urN _vendor/rsa-orig/randnum.py _vendor/rsa/randnum.py
---- _vendor/rsa-orig/randnum.py	2021-01-10 10:09:07.000000000 +0000
-+++ _vendor/rsa/randnum.py	2021-05-07 20:46:16.527798563 +0000
+--- _vendor/rsa-orig/randnum.py	2021-01-10 02:09:07.000000000 -0800
++++ _vendor/rsa/randnum.py	2021-07-12 13:54:05.567269451 -0700
 @@ -19,7 +19,7 @@
  import os
  import struct
@@ -352,8 +353,8 @@ diff -urN _vendor/rsa-orig/randnum.py _vendor/rsa/randnum.py
  
  def read_random_bits(nbits: int) -> bytes:
 diff -urN _vendor/rsa-orig/util.py _vendor/rsa/util.py
---- _vendor/rsa-orig/util.py	2021-01-10 10:09:07.000000000 +0000
-+++ _vendor/rsa/util.py	2021-05-07 20:46:36.198279201 +0000
+--- _vendor/rsa-orig/util.py	2021-01-10 02:09:07.000000000 -0800
++++ _vendor/rsa/util.py	2021-07-12 13:54:05.567269451 -0700
 @@ -17,7 +17,7 @@
  import sys
  from optparse import OptionParser
