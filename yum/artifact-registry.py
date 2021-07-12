@@ -22,6 +22,8 @@ from yum.plugins import TYPE_CORE
 requires_api_version = '2.3'
 plugin_type = (TYPE_CORE,)
 
+cloud_platform_scope = 'https://www.googleapis.com/auth/cloud-platform'
+
 
 def prereposetup_hook(conduit):
   credentials = _get_creds(conduit)
@@ -38,7 +40,7 @@ def _get_creds(conduit):
   service_account_json = conduit.confString('main', 'service_account_json', '')
   if service_account_json:
     return service_account.Credentials.from_service_account_file(
-        service_account_json)
+        service_account_json, scopes=[cloud_platform_scope])
   service_account_email = conduit.confString(
       'main', 'service_account_email', '')
   if service_account_email:

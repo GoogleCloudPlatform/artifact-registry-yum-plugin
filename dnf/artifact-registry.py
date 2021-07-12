@@ -24,6 +24,7 @@ class ArtifactRegistry(dnf.Plugin):
   """DNF Plugin for authenticated access to Google Artifact Registry."""
 
   name = 'artifact-registry'
+  cloud_platform_scope = 'https://www.googleapis.com/auth/cloud-platform'
 
   def __init__(self, base, cli):
     super(ArtifactRegistry, self).__init__(base, cli)
@@ -42,7 +43,7 @@ class ArtifactRegistry(dnf.Plugin):
       if config.has_option('main', 'service_account_json'):
         service_account_json = config.get('main', 'service_account_json')
         return service_account.Credentials.from_service_account_file(
-            service_account_json)
+            service_account_json, scopes=[self.cloud_platform_scope])
       if config.has_option('main', 'service_account_email'):
         service_account_email = config.get('main', 'service_account_email')
         return compute_engine.Credentials(service_account_email)
