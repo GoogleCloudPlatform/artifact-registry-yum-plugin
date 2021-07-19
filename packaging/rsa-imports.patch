@@ -1,6 +1,6 @@
 diff -urN _vendor/rsa-orig/cli.py _vendor/rsa/cli.py
 --- _vendor/rsa-orig/cli.py	2021-01-10 02:09:07.000000000 -0800
-+++ _vendor/rsa/cli.py	2021-07-12 13:54:05.563269430 -0700
++++ _vendor/rsa/cli.py	2021-07-19 16:29:06.837678157 -0700
 @@ -22,11 +22,11 @@
  import typing
  import optparse
@@ -87,9 +87,26 @@ diff -urN _vendor/rsa-orig/cli.py _vendor/rsa/cli.py
  
          signature_file = cli_args[1]
  
+diff -urN _vendor/rsa-orig/__init__.py _vendor/rsa/__init__.py
+--- _vendor/rsa-orig/__init__.py	2021-02-24 02:43:02.000000000 -0800
++++ _vendor/rsa/__init__.py	2021-07-19 16:30:09.618011085 -0700
+@@ -21,9 +21,10 @@
+ 
+ """
+ 
+-from rsa.key import newkeys, PrivateKey, PublicKey
+-from rsa.pkcs1 import encrypt, decrypt, sign, verify, DecryptionError, \
+-    VerificationError, find_signature_hash,  sign_hash, compute_hash
++from artifact_registry._vendor.rsa.key import newkeys, PrivateKey, PublicKey
++from artifact_registry._vendor.rsa.pkcs1 import encrypt, decrypt, sign, \
++    verify, DecryptionError, VerificationError, find_signature_hash, \
++    sign_hash, compute_hash
+ 
+ __author__ = "Sybren Stuvel, Barry Mead and Yesudeep Mangalapilly"
+ __date__ = '2021-02-24'
 diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
 --- _vendor/rsa-orig/key.py	2021-02-24 02:40:11.000000000 -0800
-+++ _vendor/rsa/key.py	2021-07-12 13:55:29.151702573 -0700
++++ _vendor/rsa/key.py	2021-07-19 16:29:06.837678157 -0700
 @@ -36,11 +36,12 @@
  import typing
  import warnings
@@ -265,7 +282,7 @@ diff -urN _vendor/rsa-orig/key.py _vendor/rsa/key.py
      (p, q, e, d) = gen_keys(nbits, getprime_func, accurate=accurate, exponent=exponent)
 diff -urN _vendor/rsa-orig/parallel.py _vendor/rsa/parallel.py
 --- _vendor/rsa-orig/parallel.py	2021-01-10 02:09:07.000000000 -0800
-+++ _vendor/rsa/parallel.py	2021-07-12 13:54:05.567269451 -0700
++++ _vendor/rsa/parallel.py	2021-07-19 16:29:06.837678157 -0700
 @@ -25,16 +25,16 @@
  import multiprocessing as mp
  from multiprocessing.connection import Connection
@@ -289,7 +306,7 @@ diff -urN _vendor/rsa-orig/parallel.py _vendor/rsa/parallel.py
  
 diff -urN _vendor/rsa-orig/pkcs1_v2.py _vendor/rsa/pkcs1_v2.py
 --- _vendor/rsa-orig/pkcs1_v2.py	2021-01-10 02:09:07.000000000 -0800
-+++ _vendor/rsa/pkcs1_v2.py	2021-07-12 13:54:05.567269451 -0700
++++ _vendor/rsa/pkcs1_v2.py	2021-07-19 16:29:06.837678157 -0700
 @@ -18,7 +18,7 @@
  documentation is RFC 2437: https://tools.ietf.org/html/rfc2437
  """
@@ -301,7 +318,7 @@ diff -urN _vendor/rsa-orig/pkcs1_v2.py _vendor/rsa/pkcs1_v2.py
      transform,
 diff -urN _vendor/rsa-orig/prime.py _vendor/rsa/prime.py
 --- _vendor/rsa-orig/prime.py	2021-01-10 02:09:07.000000000 -0800
-+++ _vendor/rsa/prime.py	2021-07-12 13:54:05.567269451 -0700
++++ _vendor/rsa/prime.py	2021-07-19 16:29:06.837678157 -0700
 @@ -18,8 +18,8 @@
  Roberto Tamassia, 2002.
  """
@@ -342,7 +359,7 @@ diff -urN _vendor/rsa-orig/prime.py _vendor/rsa/prime.py
          if is_prime(integer):
 diff -urN _vendor/rsa-orig/randnum.py _vendor/rsa/randnum.py
 --- _vendor/rsa-orig/randnum.py	2021-01-10 02:09:07.000000000 -0800
-+++ _vendor/rsa/randnum.py	2021-07-12 13:54:05.567269451 -0700
++++ _vendor/rsa/randnum.py	2021-07-19 16:29:06.837678157 -0700
 @@ -19,7 +19,7 @@
  import os
  import struct
@@ -354,7 +371,7 @@ diff -urN _vendor/rsa-orig/randnum.py _vendor/rsa/randnum.py
  def read_random_bits(nbits: int) -> bytes:
 diff -urN _vendor/rsa-orig/util.py _vendor/rsa/util.py
 --- _vendor/rsa-orig/util.py	2021-01-10 02:09:07.000000000 -0800
-+++ _vendor/rsa/util.py	2021-07-12 13:54:05.567269451 -0700
++++ _vendor/rsa/util.py	2021-07-19 16:29:06.837678157 -0700
 @@ -17,7 +17,7 @@
  import sys
  from optparse import OptionParser
