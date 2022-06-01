@@ -65,23 +65,23 @@ mv _vendor %{buildroot}%{python_sitelib}/artifact_registry/
 
 %files
 %defattr(-,root,root,-)
-%{python_sitelib}/dnf-plugins/artifact-registry.py
-%{python_sitelib}/dnf-plugins/__pycache__/artifact-registry*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/auth/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/auth/compute_engine/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/auth/compute_engine/__pycache__/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/auth/crypt/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/auth/crypt/__pycache__/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/auth/transport/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/auth/transport/__pycache__/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/auth/__pycache__/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/oauth2/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/oauth2/__pycache__/*.py*
-%{python_sitelib}/artifact_registry/_vendor/google/__pycache__/*.py*
-%{python_sitelib}/artifact_registry/_vendor/cachetools/*.py*
-%{python_sitelib}/artifact_registry/_vendor/cachetools/__pycache__/*.py*
-%{python_sitelib}/artifact_registry/_vendor/rsa/*.py*
-%{python_sitelib}/artifact_registry/_vendor/rsa/__pycache__/*.py*
+/%{python_sitelib}/dnf-plugins/artifact-registry.py
+/%{python_sitelib}/dnf-plugins/__pycache__/artifact-registry*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/auth/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/auth/compute_engine/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/auth/compute_engine/__pycache__/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/auth/crypt/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/auth/crypt/__pycache__/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/auth/transport/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/auth/transport/__pycache__/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/auth/__pycache__/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/oauth2/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/oauth2/__pycache__/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/google/__pycache__/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/cachetools/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/cachetools/__pycache__/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/rsa/*.py*
+/%{python_sitelib}/artifact_registry/_vendor/rsa/__pycache__/*.py*
 %config /etc/dnf/plugins/artifact-registry.conf
 %doc LICENSE
