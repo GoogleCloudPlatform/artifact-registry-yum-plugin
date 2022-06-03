@@ -33,6 +33,7 @@ Requires: python3-pyasn1
 Requires: python3-pyasn1-modules
 Requires: python3-six
 
+BuildRequires: python-rpm-macros
 BuildArch: noarch
 
 %description
