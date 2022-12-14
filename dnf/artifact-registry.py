@@ -1,4 +1,4 @@
-#  Copyright 2021 Google LLC
+#  Copyright 2022 Google LLC
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,46 +14,28 @@
 
 import dnf
 
-from artifact_registry._vendor.google.auth import compute_engine, default
-from artifact_registry._vendor.google.auth.exceptions import DefaultCredentialsError, RefreshError
-from artifact_registry._vendor.google.auth.transport import requests
-from artifact_registry._vendor.google.oauth2 import service_account
+from subprocess import CalledProcessError, DEVNULL, PIPE, run
+
+token_cmd = '/usr/libexec/ar-token'
 
 
 class ArtifactRegistry(dnf.Plugin):
   """DNF Plugin for authenticated access to Google Artifact Registry."""
 
   name = 'artifact-registry'
-  cloud_platform_scope = 'https://www.googleapis.com/auth/cloud-platform'
 
   def __init__(self, base, cli):
     super(ArtifactRegistry, self).__init__(base, cli)
     self.base = base
-    self.credentials = self._get_creds()
+    self.token = None
+    self.error = False
 
   def config(self):
     for repo in self.base.repos.iter_enabled():
       opts = dict(repo.cfg.items(repo.id))
-      if 'pkg.dev' in opts.get('baseurl', ''):
+      # We stop checking if an error has been flagged.
+      if 'pkg.dev' in opts.get('baseurl', '') and not self.error:
         self._add_headers(repo)
-
-  def _get_creds(self):
-    config = self.read_config(self.base.conf)
-    if config.has_section('main'):
-      if config.has_option('main', 'service_account_json'):
-        service_account_json = config.get('main', 'service_account_json')
-        return service_account.Credentials.from_service_account_file(
-            service_account_json, scopes=[self.cloud_platform_scope])
-      if config.has_option('main', 'service_account_email'):
-        service_account_email = config.get('main', 'service_account_email')
-        return compute_engine.Credentials(service_account_email)
-
-    try:
-      creds, _ = default()
-    except DefaultCredentialsError:
-      return None
-
-    return creds
 
   def _add_headers(self, repo):
     token = self._get_token()
@@ -63,11 +45,47 @@ class ArtifactRegistry(dnf.Plugin):
       repo.set_http_headers(new_headers)
 
   def _get_token(self):
-    if not self.credentials:
-      return None
-    if not self.credentials.valid:
-      try:
-        self.credentials.refresh(requests.Request())
-      except RefreshError:
-        return None
-    return self.credentials.token
+    if self.token:
+      return self.token
+
+    config = self.read_config(self.base.conf)
+    opts = {}
+    if config.has_section('main'):
+      # JSON has priority over email.
+      if config.has_option('main', 'service_account_json'):
+        opts['service_account_json'] = config.get(
+            'main', 'service_account_json')
+      elif config.has_option('main', 'service_account_email'):
+        opts['service_account_email'] = config.get(
+            'main', 'service_account_email')
+
+      if config.has_option('main', 'debug'):
+        opts['debug'] = config.getboolean('main', 'debug')
+
+    self.token = self._call_helper(**opts)
+    return self.token
+
+  def _call_helper(self, service_account_json=None, service_account_email=None,
+                   debug=False):
+    args = []
+    # JSON has priority over email.
+    if service_account_json:
+      args.append('--service_account_json=' + service_account_json)
+    elif service_account_email:
+      args.append('--service_account_email=' + service_account_email)
+
+    if debug:
+      # Inherit stderr to see debug statements
+      stderr = None
+    else:
+      stderr = DEVNULL
+
+    try:
+      cmd_result = run([token_cmd] + args,
+                       check=True, stdout=PIPE, stderr=stderr)
+    except CalledProcessError as e:
+      self.error = True
+      print('Error trying to obtain Google credentials:', e)
+      return
+
+    return cmd_result.stdout.decode('utf-8')
