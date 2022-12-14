@@ -35,9 +35,6 @@ var (
 	serviceAccountJSON = flag.String("service_acount_json", "", "Path to a service account key in JSON format")
 )
 
-// conveniently obtain and return credential token to calling yum/dnf plugin
-// this is essentially gcloud auth print-access-token
-
 func main() {
 	flag.Parse()
 
