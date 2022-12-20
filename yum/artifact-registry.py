@@ -12,61 +12,71 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from artifact_registry._vendor.google.auth import compute_engine, default
-from artifact_registry._vendor.google.auth.exceptions import DefaultCredentialsError, RefreshError
-from artifact_registry._vendor.google.auth.transport import requests
-from artifact_registry._vendor.google.oauth2 import service_account
 
 from yum.plugins import TYPE_CORE
+from subprocess import PIPE, Popen
+
+token_cmd = '/usr/libexec/ar-token'
 
 requires_api_version = '2.3'
 plugin_type = (TYPE_CORE,)
 
-cloud_platform_scope = 'https://www.googleapis.com/auth/cloud-platform'
-
 
 def prereposetup_hook(conduit):
-  credentials = _get_creds(conduit)
-  if not credentials:
+  token = _get_token(conduit)
+  if not token:
     return
   for repo in conduit.getRepos().listEnabled():
     for url in repo.urls:
       if 'pkg.dev' in url:
-        _add_headers(credentials, repo)
+        _add_headers(token, repo)
         break  # Stop looking at URLs
 
 
-def _get_creds(conduit):
+def _add_headers(token, repo):
+  repo.http_headers.update(
+     {'Authorization': 'Bearer %s' % token})
+
+
+def _get_token(conduit):
   service_account_json = conduit.confString('main', 'service_account_json', '')
-  if service_account_json:
-    return service_account.Credentials.from_service_account_file(
-        service_account_json, scopes=[cloud_platform_scope])
   service_account_email = conduit.confString(
       'main', 'service_account_email', '')
-  if service_account_email:
-    return compute_engine.Credentials(service_account_email)
+
+  opts = {}
+  if service_account_json:
+    opts['service_account_json'] = service_account_json
+  elif service_account_email:
+    opts['service_account_email'] = service_account_email
+
+  return _call_helper(**opts)
+
+
+def _call_helper(service_account_json=None, service_account_email=None,
+                 debug=False):
+  args = []
+  # JSON has priority over email.
+  if service_account_json:
+    args.append('--service_account_json=' + service_account_json)
+  elif service_account_email:
+    args.append('--service_account_email=' + service_account_email)
+
+  if debug:
+    # Inherit stderr to see debug statements
+    stderr = None
+  else:
+    stderr = PIPE
 
   try:
-    creds, _ = default()
-  except DefaultCredentialsError:
-    return None
+    cmd = Popen([token_cmd] + args, stdout=PIPE, stderr=stderr)
+  except OSError as e:
+    print('Error trying to obtain Google credentials: %s' % e)
+    return
 
-  return creds
+  retcode = cmd.wait()
+  if retcode != 0:
+    print('Error trying to obtain Google credentials: command returned %d'
+          % retcode)
+    return
 
-
-def _add_headers(credentials, repo):
-  token = _get_token(credentials)
-  if token:
-    repo.http_headers.update(
-        {'Authorization': 'Bearer %s' % str(credentials.token)})
-
-
-def _get_token(credentials):
-  if not credentials:
-    return None
-  if not credentials.valid:
-    try:
-      credentials.refresh(requests.Request())
-    except RefreshError:
-      return None
-  return credentials.token
+  return cmd.stdout.read()

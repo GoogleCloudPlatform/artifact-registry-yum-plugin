@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Don't build debuginfo packages.
+%define debug_package %{nil}
+
 Name: yum-plugin-artifact-registry
 Epoch:   1
 Version: %{_version}
@@ -20,51 +23,33 @@ Summary: Yum plugin for Artifact Registry
 License: ASL 2.0
 Url: https://cloud.google.com/artifact-registry
 Source0: %{name}_%{version}.orig.tar.gz
-Source1: google-auth-1.21.2.tar.gz
-Patch0: google-auth-el7-imports.patch
 
 Requires: yum >= 3.0
-Requires: python2-requests >= 2.0
-Requires: python2-pyasn1
-Requires: python2-pyasn1-modules
-Requires: python2-rsa
-Requires: python2-six
-Requires: python-cachetools
 
-BuildArch: noarch
+BuildArch: %{_arch}
 
 %description
 Contains a Yum plugin for authenticated access to Artifact Registry repositories.
 
 %prep
-%setup
-%setup -T -D -a 1
-mkdir _vendor
-touch _vendor/__init__.py
-mv google-auth-1.21.2/google _vendor/
-rm -rf google-auth-1.21.2
-%patch0
+%autosetup
+
+%build
+pushd cmd/ar-token
+GOPATH=%{_gopath} CGO_ENABLED=0 %{_go} build -ldflags="-s -w" -mod=readonly
+popd
 
 %install
+install -d %{buildroot}/usr/libexec
+install -p -m 0755 cmd/ar-token/ar-token %{buildroot}/usr/libexec/
 install -d %{buildroot}/usr/lib/yum-plugins
 install -p -m 0644 yum/artifact-registry.py %{buildroot}/usr/lib/yum-plugins/
 install -d %{buildroot}/etc/yum/pluginconf.d
 install -p -m 0644 artifact-registry.conf %{buildroot}/etc/yum/pluginconf.d/
-install -d %{buildroot}%{python_sitelib}/artifact_registry/
-touch %{buildroot}%{python_sitelib}/artifact_registry/__init__.py
-cp -a _vendor %{buildroot}%{python_sitelib}/artifact_registry/
-
 
 %files
 %defattr(755,root,root,-)
 /usr/lib/yum-plugins/artifact-registry.py*
-/usr/lib/python2.7/site-packages/artifact_registry/*.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/*.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/*.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/auth/*.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/auth/compute_engine/*.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/auth/crypt/*.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/auth/transport/*.py*
-/usr/lib/python2.7/site-packages/artifact_registry/_vendor/google/oauth2/*.py*
+/usr/libexec/ar-token
 %config /etc/yum/pluginconf.d/artifact-registry.conf
 %doc LICENSE
