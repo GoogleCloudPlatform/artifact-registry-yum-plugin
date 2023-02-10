@@ -25,6 +25,7 @@ Url: https://cloud.google.com/artifact-registry
 Source0: %{name}_%{version}.orig.tar.gz
 
 Requires: dnf >= 1.0.0
+BuildRequires: python3-devel
 
 BuildArch: %{_arch}
 
