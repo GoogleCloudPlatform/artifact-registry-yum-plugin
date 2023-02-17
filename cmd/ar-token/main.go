@@ -30,9 +30,9 @@ const (
 )
 
 var (
-	serviceAccountEmail = flag.String("service_acount_email", "",
+	serviceAccountEmail = flag.String("service_account_email", "",
 		"Email of a service account to use on Google Compute Engine")
-	serviceAccountJSON = flag.String("service_acount_json", "", "Path to a service account key in JSON format")
+	serviceAccountJSON = flag.String("service_account_json", "", "Path to a service account key in JSON format")
 )
 
 func main() {
