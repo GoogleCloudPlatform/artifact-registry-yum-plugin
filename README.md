@@ -46,11 +46,13 @@ The plugin can then be installed by:
 These plugins enable authenticated access to
 repositories. After installing the appropriate yum
 or dnf plugin, add the definition for your
-repository following the `official instructions`.
+repository following the 
+[official instructions](https://cloud.google.com/artifact-registry/docs/os-packages/rpm/configure).
 
 By default, the plugin will attempt to detect and
 use application default credentials as documented
-`here`. Practically this usually means using the
+[here](https://pkg.go.dev/golang.org/x/oauth2/google#FindDefaultCredentials).
+Practically this usually means using the
 default service account associated with your GCE
 instance at launch. Otherwise there are two options
 which can be set in the appropriate plugin
