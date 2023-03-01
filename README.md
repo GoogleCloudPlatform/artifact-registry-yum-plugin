@@ -51,7 +51,7 @@ repository following the
 
 By default, the plugin will attempt to detect and
 use application default credentials as documented
-[here](https://pkg.go.dev/golang.org/x/oauth2/google#FindDefaultCredentials).
+[here](https://cloud.google.com/docs/authentication/application-default-credentials).
 Practically this usually means using the
 default service account associated with your GCE
 instance at launch. Otherwise there are two options
