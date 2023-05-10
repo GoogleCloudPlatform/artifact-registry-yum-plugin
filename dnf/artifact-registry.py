@@ -37,7 +37,8 @@ class ArtifactRegistry(dnf.Plugin):
       if not hasattr(repo, 'baseurl'):
         continue
       # We stop checking if an error has been flagged.
-      if 'pkg.dev' in str(repo.baseurl) and not self.error:
+      baseurl = str(repo.baseurl)
+      if baseurl.startswith('https://') and '-yum.pkg.dev/' in baseurl and not self.error:
         self._add_headers(repo)
 
   def _add_headers(self, repo):
