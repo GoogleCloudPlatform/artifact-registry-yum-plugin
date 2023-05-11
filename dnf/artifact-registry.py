@@ -40,6 +40,7 @@ class ArtifactRegistry(dnf.Plugin):
         # We stop checking if an error has been flagged.
         if baseurl.startswith('https://') and '-yum.pkg.dev/' in baseurl and not self.error:
           self._add_headers(repo)
+          break  # Don't add more than one Authorization header.
 
   def _add_headers(self, repo):
     token = self._get_token()
