@@ -28,7 +28,7 @@ def prereposetup_hook(conduit):
     return
   for repo in conduit.getRepos().listEnabled():
     for url in repo.urls:
-      if 'pkg.dev' in url:
+      if 'pkg.dev' in url and url.startswith('https://'):
         _add_headers(token, repo)
         break  # Stop looking at URLs
 

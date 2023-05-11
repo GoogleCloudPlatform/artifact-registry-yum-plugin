@@ -36,9 +36,11 @@ class ArtifactRegistry(dnf.Plugin):
       # We don't have baseurl option so skip it earlier.
       if not hasattr(repo, 'baseurl'):
         continue
-      # We stop checking if an error has been flagged.
-      if 'pkg.dev' in str(repo.baseurl) and not self.error:
-        self._add_headers(repo)
+      for baseurl in repo.baseurl:
+        # We stop checking if an error has been flagged.
+        if baseurl.startswith('https://') and '-yum.pkg.dev/' in baseurl and not self.error:
+          self._add_headers(repo)
+          break  # Don't add more than one Authorization header.
 
   def _add_headers(self, repo):
     token = self._get_token()
