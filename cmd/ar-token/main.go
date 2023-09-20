@@ -18,7 +18,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"golang.org/x/oauth2"
@@ -37,34 +36,33 @@ var (
 
 func main() {
 	flag.Parse()
-
-	token, err := getToken()
+	ctx := context.Background()
+	token, err := getToken(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
+		fmt.Fprintf(os.Stderr, "Failed to get token with error: %v\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf(token)
+	fmt.Print(token)
 }
 
 func debug(msg string) {
 	fmt.Fprintf(os.Stderr, "DEBUG: %s\n", msg)
 }
 
-func getToken() (string, error) {
+func getToken(ctx context.Context) (string, error) {
 	var ts oauth2.TokenSource
-	ctx := context.Background()
 	switch {
 	case *serviceAccountJSON != "":
 		debug("Obtain credentials using service account JSON")
-		json, err := ioutil.ReadFile(*serviceAccountJSON)
+		json, err := os.ReadFile(*serviceAccountJSON)
 		if err != nil {
-			return "", fmt.Errorf("Failed to read creds file: %v", err)
+			return "", fmt.Errorf("unable to read service account JSON file: %v", err)
 		}
 
 		creds, err := google.CredentialsFromJSON(ctx, json, cloudPlatformScope)
 		if err != nil {
-			return "", fmt.Errorf("Failed to obtain creds: %v", err)
+			return "", fmt.Errorf("unable to obtain creds from service account JSON: %v", err)
 		}
 
 		ts = creds.TokenSource
@@ -77,19 +75,19 @@ func getToken() (string, error) {
 		debug("Obtain credentials using default lookup path")
 		creds, err := google.FindDefaultCredentials(ctx)
 		if err != nil {
-			return "", fmt.Errorf("Failed to obtain creds: %v", err)
+			return "", fmt.Errorf("unable to find default creds: %v", err)
 		}
 
 		ts = creds.TokenSource
 	}
 
 	if ts == nil {
-		return "", fmt.Errorf("Failed to obtain creds: TokenSource was empty")
+		return "", fmt.Errorf("got nil token source")
 	}
 
 	token, err := ts.Token()
 	if err != nil {
-		return "", fmt.Errorf("Failed to obtain token: %v", err)
+		return "", fmt.Errorf("unable to obtain token from token source: %v", err)
 	}
 
 	debug("Got a token")
