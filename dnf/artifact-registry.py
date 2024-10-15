@@ -37,7 +37,7 @@ class ArtifactRegistry(dnf.Plugin):
       if not hasattr(repo, 'baseurl'):
         continue
       # Check if the custom 'ar_auth' option is set in the repository's config.
-      if repo.cfg.getboolean(repo.id, 'ar_auth', fallback=False):
+      if repo.cfg.has_option(repo.id, 'ar_auth') and repo.cfg.getboolean(repo.id, 'ar_auth'):
         self._add_headers(repo)
         break  # Don't add more than one Authorization header.
       # Check if any repo urls are for Artifact Registry.
