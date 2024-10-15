@@ -36,6 +36,11 @@ class ArtifactRegistry(dnf.Plugin):
       # We don't have baseurl option so skip it earlier.
       if not hasattr(repo, 'baseurl'):
         continue
+      # Check if the custom 'ar_auth' option is set in the repository's config.
+      if repo.cfg.getboolean(repo.id, 'ar_auth', fallback=False):
+        self._add_headers(repo)
+        break  # Don't add more than one Authorization header.
+      # Check if any repo urls are for Artifact Registry.
       for baseurl in repo.baseurl:
         # We stop checking if an error has been flagged.
         if baseurl.startswith('https://') and '-yum.pkg.dev/' in baseurl and not self.error:
