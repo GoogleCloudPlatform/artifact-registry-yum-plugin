@@ -27,8 +27,8 @@ def prereposetup_hook(conduit):
   if not token:
     return
   for repo in conduit.getRepos().listEnabled():
-    # Check if the custom 'ar_auth' option is set in the repository's config.
-    if repo.cfg.has_option(repo.id, 'ar_auth') and repo.cfg.getboolean(repo.id, 'ar_auth'):
+    # Check if the 'artifact_registry_oauth' option is set in the repository's config.
+    if repo.cfg.has_option(repo.id, 'artifact_registry_oauth') and repo.cfg.getboolean(repo.id, 'artifact_registry_oauth'):
       _add_headers(token, repo)
       break  # Stop looking at URLs
     # Check if any repo urls are for Artifact Registry.
