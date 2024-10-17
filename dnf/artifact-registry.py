@@ -33,9 +33,14 @@ class ArtifactRegistry(dnf.Plugin):
   def config(self):
     """ Setup http headers to repos with baseurl option containing pkg.dev. """
     for repo in self.base.repos.iter_enabled():
+      # Check if the 'artifact_registry_oauth' option is set in the repository's config.
+      if repo.cfg.has_option(repo.id, 'artifact_registry_oauth') and repo.cfg.getboolean(repo.id, 'artifact_registry_oauth'):
+        self._add_headers(repo)
+        break  # Don't add more than one Authorization header.
       # We don't have baseurl option so skip it earlier.
       if not hasattr(repo, 'baseurl'):
         continue
+      # Check if any repo urls are for Artifact Registry.
       for baseurl in repo.baseurl:
         # We stop checking if an error has been flagged.
         if baseurl.startswith('https://') and '-yum.pkg.dev/' in baseurl and not self.error:
