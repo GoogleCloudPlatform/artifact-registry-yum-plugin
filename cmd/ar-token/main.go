@@ -73,7 +73,7 @@ func getToken(ctx context.Context) (string, error) {
 
 	default:
 		debug("Obtain credentials using default lookup path")
-		creds, err := google.FindDefaultCredentials(ctx)
+		creds, err := google.FindDefaultCredentials(ctx, cloudPlatformScope)
 		if err != nil {
 			return "", fmt.Errorf("unable to find default creds: %v", err)
 		}
