@@ -15,6 +15,7 @@
 import dnf
 
 from subprocess import CalledProcessError, DEVNULL, PIPE, run
+from urllib.parse import urlparse
 
 token_cmd = '/usr/libexec/ar-token'
 
@@ -42,10 +43,11 @@ class ArtifactRegistry(dnf.Plugin):
         continue
       # Check if any repo urls are for Artifact Registry.
       for baseurl in repo.baseurl:
-        # We stop checking if an error has been flagged.
-        if baseurl.startswith('https://') and '-yum.pkg.dev/' in baseurl and not self.error:
-          self._add_headers(repo)
-          break  # Don't add more than one Authorization header.
+        if not self.error:  # Check error flag first for efficiency
+          parsed_url = urlparse(baseurl)
+          if parsed_url.scheme == 'https' and parsed_url.netloc.endswith('-yum.pkg.dev'):
+            self._add_headers(repo)
+            break  # Don't add more than one Authorization header.
 
   def _add_headers(self, repo):
     token = self._get_token()
