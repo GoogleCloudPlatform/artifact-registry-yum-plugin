@@ -15,6 +15,7 @@
 
 from yum.plugins import TYPE_CORE
 from subprocess import PIPE, Popen
+from urllib.parse import urlparse
 
 token_cmd = '/usr/libexec/ar-token'
 
@@ -33,7 +34,8 @@ def prereposetup_hook(conduit):
       break  # Stop looking at URLs
     # Check if any repo urls are for Artifact Registry.
     for url in repo.urls:
-      if 'pkg.dev' in url and url.startswith('https://'):
+      parsed_url = urlparse(url)
+      if parsed_url.scheme == 'https' and parsed_url.netloc.endswith('.pkg.dev'):
         _add_headers(token, repo)
         break  # Stop looking at URLs
 
