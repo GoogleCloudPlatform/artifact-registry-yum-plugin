@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - release/**
+
+jobs:
+  build:
+    name: Build RPMs
+    runs-on: ubuntu-latest
+    env:
+      VERSION: 9.9.9
+    container:
+      image: rockylinux/rockylinux:${{ matrix.versions }}
+    strategy:
+      matrix:
+        versions: ['9.6', '10.0']
+        # versions: ['9.6', '10.0']
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+
+    - name: Install packages
+      run: |
+        dnf install -y epel-release
+        dnf update -y
+        dnf install -y rpm-build rpmdevtools python3-devel go-rpm-macros epel-rpm-macros
+    - name: Build source
+      run: |
+        tar --transform "s%^\\./%dnf-plugin-artifact-registry-${VERSION}/%" -cf "${{ runner.temp }}/dnf-plugin-artifact-registry_${VERSION}.orig.tar.gz" .
+    - name: Build RPM
+      run: |
+        rpmbuild -ba --define "_sourcedir ${{ runner.temp }}" --define "_version $VERSION" --define "_go go" --define "_gopath $GOPATH"  --define "_rpmdir ${{ runner.temp }}/out" packaging/artifact-registry-yum-plugin.spec
+
+    - name: Upload RPMs
+      run: |
+        ls -la ${{ runner.temp }}/out
