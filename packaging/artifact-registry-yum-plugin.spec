@@ -25,6 +25,7 @@ Url: https://cloud.google.com/artifact-registry
 Source0: %{name}_%{version}.orig.tar.gz
 
 Requires: dnf >= 1.0.0
+Requires: python(abi) >= 3.9
 BuildRequires: python3-devel
 
 BuildArch: %{_arch}
@@ -49,10 +50,12 @@ install -p -m 0644 dnf/artifact-registry.py %{buildroot}%{python_sitelib}/dnf-pl
 install -d %{buildroot}/etc/dnf/plugins
 install -p -m 0644 artifact-registry.conf %{buildroot}/etc/dnf/plugins/
 
+# remove the byte compiled files to allow for different python versions
+rm -rf %{buildroot}%{python_sitelib}/dnf-plugins/__pycache__
+
 %files
 %defattr(-,root,root,-)
 /usr/libexec/ar-token
 /%{python_sitelib}/dnf-plugins/artifact-registry.py
-/%{python_sitelib}/dnf-plugins/__pycache__/artifact-registry*.py*
 %config /etc/dnf/plugins/artifact-registry.conf
 %doc LICENSE
