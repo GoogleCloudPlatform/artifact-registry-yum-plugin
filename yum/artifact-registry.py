@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
+import os
 from yum.plugins import TYPE_CORE
 from subprocess import PIPE, Popen
 from urllib.parse import urlparse
@@ -75,7 +75,7 @@ def _call_helper(service_account_json=None, service_account_email=None,
     stderr = PIPE
 
   try:
-    cmd = Popen([token_cmd] + args, stdout=PIPE, stderr=stderr)
+    cmd = Popen([token_cmd] + args, stdout=PIPE, stderr=stderr, env=os.environ.copy())
   except OSError as e:
     print('Error trying to obtain Google credentials: %s' % e)
     return
