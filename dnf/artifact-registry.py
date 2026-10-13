@@ -13,10 +13,14 @@
 #  limitations under the License.
 
 import dnf
+import dnf.logging
 
 from subprocess import CalledProcessError, DEVNULL, PIPE, run
 from urllib.parse import urlparse
 
+import logging
+
+logger = logging.getLogger("dnf")
 token_cmd = '/usr/libexec/ar-token'
 
 
@@ -36,16 +40,19 @@ class ArtifactRegistry(dnf.Plugin):
     for repo in self.base.repos.iter_enabled():
       # Check if the 'artifact_registry_oauth' option is set in the repository's config.
       if repo.cfg.has_option(repo.id, 'artifact_registry_oauth') and repo.cfg.getboolean(repo.id, 'artifact_registry_oauth'):
+        logger.debug(f"Adding Authorization header to {repo.id}")
         self._add_headers(repo)
         break  # Don't add more than one Authorization header.
       # We don't have baseurl option so skip it earlier.
       if not hasattr(repo, 'baseurl'):
+        logger.debug(f"Skipping {repo.id}")
         continue
       # Check if any repo urls are for Artifact Registry.
       for baseurl in repo.baseurl:
         if not self.error:  # Check error flag first for efficiency
           parsed_url = urlparse(baseurl)
           if parsed_url.scheme == 'https' and parsed_url.netloc.endswith('-yum.pkg.dev'):
+            logger.debug(f"Adding Authorization header to {repo.id}")
             self._add_headers(repo)
             break  # Don't add more than one Authorization header.
 
@@ -70,6 +77,13 @@ class ArtifactRegistry(dnf.Plugin):
       elif config.has_option('main', 'service_account_email'):
         opts['service_account_email'] = config.get(
             'main', 'service_account_email')
+      elif config.has_option('main', 'use_cloud_sdk') and config.get(
+            'main', 'use_cloud_sdk') == "1":
+        # Here we need to call the cloud sdk in order to retrieve a valid token
+        result = run(["/usr/bin/gcloud", "auth", "print-access-token"], stdout=PIPE)
+        token = result.stdout.decode("utf-8").rstrip()
+        logger.debug(f"Obtained token from gcloud command {token}")
+        return token
 
       if config.has_option('main', 'debug'):
         opts['debug'] = config.getboolean('main', 'debug')
