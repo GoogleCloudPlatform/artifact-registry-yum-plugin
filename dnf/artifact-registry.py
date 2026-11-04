@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import os
 import dnf
 
 from subprocess import CalledProcessError, DEVNULL, PIPE, run
@@ -94,7 +95,7 @@ class ArtifactRegistry(dnf.Plugin):
 
     try:
       cmd_result = run([token_cmd] + args,
-                       check=True, stdout=PIPE, stderr=stderr)
+                       check=True, stdout=PIPE, stderr=stderr, env=os.environ.copy())
     except CalledProcessError as e:
       self.error = True
       print('Error trying to obtain Google credentials:', e)
