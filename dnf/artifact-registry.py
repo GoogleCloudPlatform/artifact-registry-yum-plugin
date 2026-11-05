@@ -35,7 +35,7 @@ class ArtifactRegistry(dnf.Plugin):
     """ Setup http headers to repos with baseurl option containing pkg.dev. """
     for repo in self.base.repos.iter_enabled():
       # Check if the 'artifact_registry_oauth' option is set in the repository's config.
-      if repo.cfg.has_option(repo.id, 'artifact_registry_oauth') and repo.cfg.getboolean(repo.id, 'artifact_registry_oauth'):
+      if hasattr(repo, 'cfg') and repo.cfg.has_option(repo.id, 'artifact_registry_oauth') and repo.cfg.getboolean(repo.id, 'artifact_registry_oauth'):
         self._add_headers(repo)
         break  # Don't add more than one Authorization header.
       # We don't have baseurl option so skip it earlier.
