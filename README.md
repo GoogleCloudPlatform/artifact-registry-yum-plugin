@@ -26,7 +26,7 @@ with the following contents:
 
     [ar-plugin]
     name=Artifact Registry Plugin
-    baseurl=https://packages.cloud.google.com/yum/repos/$YUM-plugin-artifact-registry-stable 
+    baseurl=https://packages.cloud.google.com/yum/repos/$YUM-plugin-artifact-registry-stable
     enabled=1
     gpgcheck=1
     repo_gpgcheck=0
@@ -40,13 +40,66 @@ The plugin can then be installed by:
 
     $ yum install $YUM-plugin-artifact-registry
 
+#### Flowplay-built packages (Rocky Linux 9 / 10)
+
+This fork also builds and publishes `dnf-plugin-artifact-registry` RPMs for
+Rocky Linux 9 and 10 to a Flowplay-managed, GPG-signed yum repository hosted
+in `gs://flowplay-public-repo`. See [Releasing](#releasing) below for how
+builds are produced.
+
+Create `/etc/yum.repos.d/flowplay-ar-plugin.repo` with the contents matching
+your OS major version (`el9` or `el10`):
+
+    [flowplay-ar-plugin]
+    name=Flowplay Artifact Registry Plugin
+    baseurl=https://storage.googleapis.com/flowplay-public-repo/dnf/el9/x86_64
+    enabled=1
+    gpgcheck=1
+    repo_gpgcheck=1
+    gpgkey=https://storage.googleapis.com/flowplay-public-repo/dnf/doc/RPM-GPG-KEY-flowplay-public-repo
+
+Then install with:
+
+    $ dnf install dnf-plugin-artifact-registry
+
+## Releasing
+
+RPMs are built and published via
+[`.github/workflows/build-rpm.yml`](.github/workflows/build-rpm.yml), which
+builds natively inside `rockylinux/rockylinux:9` and `:10` containers, then
+GPG-signs the packages and repo metadata before syncing to
+`gs://flowplay-public-repo/dnf/{el9,el10}/x86_64`. It can be triggered in a
+few ways, all restricted to the approvers listed in [OWNERS](OWNERS):
+
+* Push a tag like `v1.2.3` on the default branch to build, sign, and publish
+  both distros.
+* Run the workflow manually (`workflow_dispatch`) to build only, or to
+  build+publish by supplying a version and checking "publish".
+* Comment on a pull request:
+  * `/build-rpm [version]` — builds el9 + el10 RPMs from the PR head and
+    uploads them as workflow run artifacts only (no signing, no publish).
+  * `/publish-rpm <version>` — builds, signs, and publishes from the PR head.
+
+One-time setup required before the publish path will work (not needed for
+`/build-rpm`):
+
+* `secrets.GPG_PRIVATE_KEY_B64` — a base64-encoded, armored GPG private key
+  used to sign packages and repo metadata.
+* `secrets.GPG_PASSPHRASE` — the passphrase for that key.
+* `secrets.GCP_SA_KEY` — a JSON key for a service account in `operations-167722`
+  granted `roles/storage.objectAdmin` on `gs://flowplay-public-repo` (scope
+  the grant to the bucket, not the project).
+* The bucket should grant `roles/storage.objectViewer` to `allUsers` (or
+  equivalent) so `https://storage.googleapis.com/flowplay-public-repo/...`
+  is publicly readable, matching the `baseurl`/`gpgkey` above.
+
 
 ## Configuration and usage
 
 These plugins enable authenticated access to
 repositories. After installing the appropriate yum
 or dnf plugin, add the definition for your
-repository following the 
+repository following the
 [official instructions](https://cloud.google.com/artifact-registry/docs/os-packages/rpm/configure).
 
 By default, the plugin will attempt to detect and

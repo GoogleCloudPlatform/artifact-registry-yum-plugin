@@ -1,0 +1,277 @@
+name: Build and publish RPM
+
+# Three ways to run this pipeline:
+#   1. Push a tag like "v1.2.3" on the default branch -> build, sign, and
+#      publish el9 + el10 packages to gs://flowplay-public-repo.
+#   2. Manually run via workflow_dispatch -> build only, or build+publish if
+#      the "publish" input is checked and a version is supplied.
+#   3. Comment on a pull request:
+#        /build-rpm [version]     - build el9+el10 RPMs from the PR head and
+#                                    upload them as workflow artifacts only.
+#        /publish-rpm <version>   - build, GPG-sign, and publish to the
+#                                    public bucket from the PR head.
+#      Both slash commands are restricted to the approvers listed in OWNERS
+#      (checked against the default branch, not the PR branch, so a PR can't
+#      grant itself publish rights by editing OWNERS).
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to build, e.g. 1.2.3 (required to publish)"
+        required: false
+        type: string
+      publish:
+        description: "Sign and publish to gs://flowplay-public-repo"
+        required: false
+        type: boolean
+        default: false
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  gate:
+    name: Determine trigger / authorization
+    runs-on: ubuntu-latest
+    outputs:
+      proceed: ${{ steps.eval.outputs.proceed }}
+      mode: ${{ steps.eval.outputs.mode }}
+      version: ${{ steps.eval.outputs.version }}
+      ref: ${{ steps.eval.outputs.ref }}
+      pr_number: ${{ steps.eval.outputs.pr_number }}
+    steps:
+      - name: Evaluate trigger and authorization
+        id: eval
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const setOut = (o) => { for (const [k, v] of Object.entries(o)) core.setOutput(k, String(v)); };
+            const sanitize = (v) => (v || "").replace(/^v/i, "").trim();
+
+            async function isAuthorized(login) {
+              try {
+                const { data } = await github.rest.repos.getContent({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  path: "OWNERS",
+                  ref: context.payload.repository.default_branch,
+                });
+                const text = Buffer.from(data.content, "base64").toString("utf8");
+                const approvers = [...text.matchAll(/^\s*-\s*([^\s#]+)/gm)].map(m => m[1].toLowerCase());
+                return approvers.includes(login.toLowerCase());
+              } catch (e) {
+                core.warning(`Could not read OWNERS: ${e.message}`);
+                return false;
+              }
+            }
+
+            if (context.eventName === "push") {
+              // Tag push: only users with repo write access can push tags.
+              setOut({
+                proceed: true,
+                mode: "publish",
+                version: sanitize(context.ref.replace("refs/tags/", "")),
+                ref: context.sha,
+                pr_number: "",
+              });
+              return;
+            }
+
+            if (context.eventName === "workflow_dispatch") {
+              const publish = `${context.payload.inputs.publish}` === "true";
+              const version = sanitize(context.payload.inputs.version);
+              if (publish && !version) {
+                core.setFailed("workflow_dispatch: 'version' is required when 'publish' is checked.");
+                return;
+              }
+              setOut({
+                proceed: true,
+                mode: publish ? "publish" : "build",
+                version: version || `0.0.0.${context.sha.slice(0, 7)}`,
+                ref: context.sha,
+                pr_number: "",
+              });
+              return;
+            }
+
+            if (context.eventName === "issue_comment") {
+              const comment = context.payload.comment;
+              const issue = context.payload.issue;
+              if (!issue.pull_request) {
+                setOut({ proceed: false });
+                return;
+              }
+              const match = (comment.body || "").trim().match(/^\/(build|publish)-rpm(?:\s+(\S+))?\s*$/i);
+              if (!match) {
+                setOut({ proceed: false });
+                return;
+              }
+              const mode = match[1].toLowerCase();
+              const version = sanitize(match[2]);
+
+              const authorized = await isAuthorized(comment.user.login);
+              if (!authorized) {
+                await github.rest.reactions.createForIssueComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  comment_id: comment.id, content: "-1",
+                });
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `@${comment.user.login} is not listed in OWNERS and can't trigger \`/${mode}-rpm\`.`,
+                });
+                setOut({ proceed: false });
+                return;
+              }
+
+              if (mode === "publish" && !version) {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: "`/publish-rpm` requires a version, e.g. `/publish-rpm 1.2.3`.",
+                });
+                setOut({ proceed: false });
+                return;
+              }
+
+              const pr = (await github.rest.pulls.get({
+                owner: context.repo.owner, repo: context.repo.repo,
+                pull_number: issue.number,
+              })).data;
+
+              await github.rest.reactions.createForIssueComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                comment_id: comment.id, content: "eyes",
+              });
+
+              setOut({
+                proceed: true,
+                mode,
+                version: version || `0.0.0.${pr.head.sha.slice(0, 7)}`,
+                ref: pr.head.sha,
+                pr_number: issue.number,
+              });
+              return;
+            }
+
+            setOut({ proceed: false });
+
+  build:
+    name: Build (${{ matrix.dist }})
+    needs: gate
+    if: needs.gate.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dist: el9
+            image: rockylinux/rockylinux:9
+          - dist: el10
+            image: rockylinux/rockylinux:10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.ref }}
+
+      - name: Build RPM
+        run: scripts/ci/build-rpm.sh "${{ matrix.dist }}" "${{ needs.gate.outputs.version }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rpm-${{ matrix.dist }}
+          path: dist/${{ matrix.dist }}/*.rpm
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Sign and publish repo
+    needs: [gate, build]
+    if: needs.gate.outputs.proceed == 'true' && needs.gate.outputs.mode == 'publish'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.ref }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: rpm-el9
+          path: dist/el9
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: rpm-el10
+          path: dist/el10
+
+      - name: Install repo/signing tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y createrepo-c gnupg2 rpm
+
+      - name: Import GPG signing key
+        id: gpg
+        run: |
+          echo "${GPG_PRIVATE_KEY_B64}" | base64 -d | gpg --batch --import
+          key_id=$(gpg --list-secret-keys --with-colons | awk -F: '/^sec:/ {print $5; exit}')
+          echo "key_id=${key_id}" >> "$GITHUB_OUTPUT"
+        env:
+          GPG_PRIVATE_KEY_B64: ${{ secrets.GPG_PRIVATE_KEY_B64 }}
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Sign + publish el9 repo
+        env:
+          GPG_KEY_ID: ${{ steps.gpg.outputs.key_id }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: scripts/ci/sign-and-publish-repo.sh dist/el9 gs://flowplay-public-repo/dnf/el9/x86_64
+
+      - name: Sign + publish el10 repo
+        env:
+          GPG_KEY_ID: ${{ steps.gpg.outputs.key_id }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: scripts/ci/sign-and-publish-repo.sh dist/el10 gs://flowplay-public-repo/dnf/el10/x86_64
+
+      - name: Publish public signing key
+        run: |
+          gpg --armor --export "${{ steps.gpg.outputs.key_id }}" > RPM-GPG-KEY-flowplay-public-repo
+          gcloud storage cp RPM-GPG-KEY-flowplay-public-repo gs://flowplay-public-repo/dnf/doc/RPM-GPG-KEY-flowplay-public-repo
+
+  notify:
+    name: Comment with result
+    needs: [gate, build, publish]
+    if: always() && github.event_name == 'issue_comment' && needs.gate.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const results = { build: "${{ needs.build.result }}", publish: "${{ needs.publish.result }}" };
+            const mode = "${{ needs.gate.outputs.mode }}";
+            const ok = mode === "publish"
+              ? results.build === "success" && results.publish === "success"
+              : results.build === "success";
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = ok
+              ? `✅ \`/${mode}-rpm ${"${{ needs.gate.outputs.version }}"}\` succeeded. [Run](${runUrl})`
+              : `❌ \`/${mode}-rpm\` failed (build=${results.build}, publish=${results.publish}). [Run](${runUrl})`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: Number("${{ needs.gate.outputs.pr_number }}"),
+              body,
+            });
